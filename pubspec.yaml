@@ -38,5 +38,4 @@ flutter:
         - asset: assets/fonts/MSYHBD.TTC
           weight: 700
 
-  assets:
-    - assets/images/
+
