@@ -1,10 +1,11 @@
-import 'package:management_invoices/views/help_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:management_invoices/viewModels/home_view_model.dart';
 
-import 'package:management_invoices/views/invoice_self.dart';
+import 'package:management_invoices/views/help_view.dart';
+import 'package:management_invoices/views/invoice_self_view.dart';
+import 'package:management_invoices/views/components/avatar_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -36,7 +37,7 @@ class HomeView extends StatelessWidget {
             icon: const Icon(FluentIcons.invoice),
             title: const Text('我的发票'),
             mouseCursor: SystemMouseCursors.click,
-            body: const InvoiceSelf(),
+            body: const InvoiceSelfView(),
           ),
         ],
         footerItems: [
@@ -63,7 +64,13 @@ class _HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('欢迎使用发票管理系统'));
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        children: [const Center(child: Text("欢迎使用发票管理系统")), const AvatarView()],
+      ),
+    );
   }
 }
 
@@ -82,14 +89,14 @@ void _showCloseDialog(BuildContext context, HomeViewModel homeViewModel) {
               cursor: SystemMouseCursors.click,
               child: FilledButton(
                 child: const Text('确认'),
-                onPressed: () => homeViewModel.confirmClose(true),
+                onPressed: () => homeViewModel.confirmClose(context, true),
               ),
             ),
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: FilledButton(
                 child: const Text('取消'),
-                onPressed: () => homeViewModel.confirmClose(false),
+                onPressed: () => homeViewModel.confirmClose(context, false),
               ),
             ),
           ],

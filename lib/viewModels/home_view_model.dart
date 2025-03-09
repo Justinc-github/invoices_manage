@@ -21,12 +21,13 @@ class HomeViewModel with ChangeNotifier, WindowListener {
   }
 
   // 关闭窗口
-  Future<void> confirmClose(bool shouldClose) async {
+  Future<void> confirmClose(BuildContext context, bool shouldClose) async {
     if (shouldClose) {
       await windowManager.hide(); // 立即隐藏窗口
       await windowManager.destroy(); // 关闭窗口并释放资源
     } else {
       _isClosing = false;
+      Navigator.pop(context);
       notifyListeners();
     }
   }
