@@ -2,10 +2,13 @@ import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'package:management_invoices/models/repositories/avatar_repositiory.dart';
+
 import 'package:management_invoices/viewModels/home_view_model.dart';
+import 'package:management_invoices/viewModels/shared/avatar_view_model.dart';
+import 'package:management_invoices/viewModels/utils/windows_controller.dart';
 
 import 'package:management_invoices/views/home_view.dart';
-import 'package:management_invoices/viewModels/utils/windows_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +21,18 @@ void main() async {
   runApp(
     MultiProvider(
       // 监听HomeViewModel状态变化
-      providers: [ChangeNotifierProvider(create: (_) => HomeViewModel())],
+      providers: [
+        Provider(create: (_) => AvatarRepository()),
+
+        ChangeNotifierProvider(
+          create:
+              (context) => AvatarViewModel(
+                context.read<AvatarRepository>(), // 从已注册的 Repository 获取实例
+              ),
+        ),
+
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -34,7 +48,7 @@ class MyApp extends StatelessWidget {
       theme: FluentThemeData(
         brightness: Brightness.light,
         fontFamily: 'MSYH',
-        accentColor: Colors.orange,
+        accentColor: Colors.blue,
       ),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,
