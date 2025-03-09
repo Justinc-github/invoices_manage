@@ -3,28 +3,32 @@ import 'package:management_invoices/models/repositories/avatar_repositiory.dart'
 
 class AvatarViewModel extends ChangeNotifier {
   final AvatarRepository _avatarRepository;
-  bool _isLoading = false;
   String? _avatarUser;
   String? _error;
-
+  bool _isLoading = false; // 新增加载状态
   AvatarViewModel(this._avatarRepository);
 
-  bool get isLoading => _isLoading;
   String? get avatarUser => _avatarUser;
   String? get error => _error;
+  bool get isLoading => _isLoading; // 暴露加载状态
 
   Future<void> uploadAvatar() async {
-    _isLoading = true;
+    _error = null; // 重置错误状态
+    _isLoading = true; // 开始加载
     notifyListeners();
-    // debugPrint(_avatarRepository.uploadAvatar('1').toString());
     try {
+      // 调用封装的上传用户头像的api
       _avatarUser = await _avatarRepository.uploadAvatar('1');
-      debugPrint(_avatarUser);
     } catch (e) {
       _error = e.toString();
     } finally {
-      _isLoading = false;
+      _isLoading = false; // 结束加载
       notifyListeners();
     }
+  }
+
+  void errorClose() {
+    _error = null;
+    notifyListeners();
   }
 }

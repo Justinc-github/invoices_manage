@@ -12,22 +12,33 @@ class AvatarView extends StatelessWidget {
     return Positioned(
       right: 20,
       top: 20,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => avatarViewModel.uploadAvatar(),
-          child: CircleAvatar(
-            radius: 30,
-            backgroundImage:
-                avatarViewModel.avatarUser != null &&
-                        avatarViewModel.avatarUser!.isNotEmpty
-                    ? NetworkImage(avatarViewModel.avatarUser.toString())
-                    : const NetworkImage(
-                          'https://pic1.imgdb.cn/item/67cd456e066befcec6e1dfe6.jpg',
-                        )
-                        as ImageProvider,
+      child: Row(
+        children: [
+          if (avatarViewModel.error != null)
+            InfoBar(
+              title: const Text('上传失败'),
+              content: Text(avatarViewModel.error!),
+              severity: InfoBarSeverity.error,
+              onClose: () => avatarViewModel.errorClose(),
+            ),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => avatarViewModel.uploadAvatar(),
+              child: CircleAvatar(
+                radius: 30,
+                backgroundImage:
+                    avatarViewModel.avatarUser != null &&
+                            avatarViewModel.avatarUser!.isNotEmpty
+                        ? NetworkImage(avatarViewModel.avatarUser.toString())
+                        : const NetworkImage(
+                              'https://pic1.imgdb.cn/item/67cd456e066befcec6e1dfe6.jpg',
+                            )
+                            as ImageProvider,
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

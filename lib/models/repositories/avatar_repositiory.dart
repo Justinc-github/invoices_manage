@@ -11,19 +11,16 @@ class AvatarRepository {
 
   AvatarRepository({Dio? dio}) : dio = dio ?? Dio(); // 允许自定义 Dio 实例
 
-  /// 上传用户头像并返回图片 URL
-  ///
-  /// [userId] 用户唯一标识符
   /// 返回头像 URL，失败时返回 null
   Future<String?> uploadAvatar(String userId) async {
     try {
-      // 1. 构建完整的请求 URL（避免字符串拼接错误）
+      // 构建完整的请求URL
       final uploadUrl =
           Uri.parse(
             '$_baseUrl$_uploadPath',
           ).replace(queryParameters: {'user_id': userId}).toString();
 
-      // 2. 选择文件（添加更安全的空检查）
+      // 选择文件
       final fileResult = await FilePicker.platform.pickFiles(
         type: FileType.image,
         allowMultiple: false, // 明确禁止多选
@@ -40,12 +37,12 @@ class AvatarRepository {
         return null;
       }
 
-      // 3. 创建 FormData
+      // 创建FormData
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(filePath),
       });
 
-      // 4. 发起请求（添加超时和内容类型）
+      // 发起请求
       final response = await dio.post<String>(
         uploadUrl,
         data: formData,
@@ -55,22 +52,20 @@ class AvatarRepository {
         ),
       );
 
-      // 5. 处理响应（使用更安全的 JSON 解析）
-      if (response.statusCode != 200) {
+      // 处理响应
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.data!) as Map<String, dynamic>;
+        final avatarUrl = jsonData['img_url'] as String?;
+        return avatarUrl;
+      } else {
         throw DioException(
           requestOptions: response.requestOptions,
           response: response,
           error: '上传失败，状态码: ${response.statusCode}',
         );
       }
-
-      final jsonData = jsonDecode(response.data!) as Map<String, dynamic>;
-      final avatarUrl = jsonData['img_url'] as String?;
-      return avatarUrl;
     } on DioException catch (e) {
-      // 捕获 Dio 特定错误
-      debugPrint('头像上传失败: ${e.message}');
-      return null;
+      return e.message;
     }
   }
 }
