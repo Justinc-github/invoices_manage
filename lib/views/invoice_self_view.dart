@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-class InvoiceSelf extends StatelessWidget {
-  const InvoiceSelf({super.key});
+class InvoiceSelfView extends StatelessWidget {
+  const InvoiceSelfView({super.key});
 
   @override
   Widget build(BuildContext context) {
