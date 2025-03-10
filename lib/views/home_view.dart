@@ -20,7 +20,12 @@ class HomeView extends StatelessWidget {
         _showCloseDialog(context, homeViewModel);
       });
     }
-
+    // 监听展示登录弹窗的状态
+    if (homeViewModel.isCloseLoginDialog) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showLoginDialog(context, homeViewModel);
+      });
+    }
     return NavigationView(
       pane: NavigationPane(
         selected: homeViewModel.selectedIndex,
@@ -68,7 +73,7 @@ class _HomeContent extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       child: Stack(
-        children: [const Center(child: Text("欢迎使用发票管理系统")), const AvatarView()],
+        children: [const Center(child: Text('主页')), const AvatarView()],
       ),
     );
   }
@@ -97,6 +102,65 @@ void _showCloseDialog(BuildContext context, HomeViewModel homeViewModel) {
               child: FilledButton(
                 child: const Text('取消'),
                 onPressed: () => homeViewModel.confirmClose(context, false),
+              ),
+            ),
+          ],
+        ),
+  );
+}
+
+void _showLoginDialog(BuildContext context, HomeViewModel homeViewModel) {
+  showDialog(
+    context: context,
+    barrierDismissible: false, // 禁止点击外部关闭
+    builder:
+        (context) => ContentDialog(
+          title: Center(child: const Text('请登录后使用该系统')),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextBox(
+                  controller: homeViewModel.usernameController,
+                  placeholder: '用户名',
+                  enabled: !homeViewModel.isLoggingIn,
+                ),
+                const SizedBox(height: 12),
+                TextBox(
+                  controller: homeViewModel.passwordController,
+                  placeholder: '密码',
+                  obscureText: true,
+                  enabled: !homeViewModel.isLoggingIn,
+                ),
+                if (homeViewModel.loginError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      homeViewModel.loginError!,
+                      style: TextStyle(color: Colors.red.dark),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          actions: [
+            FilledButton(
+              onPressed:
+                  homeViewModel.isLoggingIn
+                      ? null
+                      : () => homeViewModel.handleLogin(),
+              style: ButtonStyle(),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (homeViewModel.isLoggingIn)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: ProgressRing(strokeWidth: 2),
+                    ),
+                  Text(homeViewModel.isLoggingIn ? '登录中...' : '登录'),
+                ],
               ),
             ),
           ],

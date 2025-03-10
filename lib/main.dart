@@ -1,3 +1,4 @@
+import 'package:management_invoices/models/repositories/auth_respositiory.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
@@ -41,10 +42,13 @@ void main() async {
                   InvoiceSelfViewModel(context.read<InvoiceSelfRespositiory>()),
         ),
 
-        // 主页监视
-        ChangeNotifierProvider(create: (_) => HomeViewModel()),
+        // 用户登录
+        Provider(create: (_) => AuthRespositiory()),
+        ChangeNotifierProvider(
+          create: (context) => HomeViewModel(context.read<AuthRespositiory>()),
+        ),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
 }

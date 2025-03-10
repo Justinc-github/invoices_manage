@@ -3,10 +3,10 @@ import 'package:management_invoices/models/repositories/avatar_respositiory.dart
 
 class AvatarViewModel extends ChangeNotifier {
   final AvatarRepository _avatarRepository;
+  AvatarViewModel(this._avatarRepository);
   String? _avatarUser;
   String? _error;
   bool _isLoading = false; // 新增加载状态
-  AvatarViewModel(this._avatarRepository);
 
   String? get avatarUser => _avatarUser;
   String? get error => _error;
