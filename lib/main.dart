@@ -3,10 +3,12 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:management_invoices/models/repositories/avatar_repositiory.dart';
+import 'package:management_invoices/models/repositories/invoice_self_respositiory.dart';
 
 import 'package:management_invoices/viewModels/home_view_model.dart';
 import 'package:management_invoices/viewModels/shared/avatar_view_model.dart';
 import 'package:management_invoices/viewModels/utils/windows_controller.dart';
+import 'package:management_invoices/viewModels/invoice_self_view_model.dart';
 
 import 'package:management_invoices/views/home_view.dart';
 
@@ -22,8 +24,8 @@ void main() async {
     MultiProvider(
       // 监听HomeViewModel状态变化
       providers: [
+        // 用户头像
         Provider(create: (_) => AvatarRepository()),
-
         ChangeNotifierProvider(
           create:
               (context) => AvatarViewModel(
@@ -31,6 +33,15 @@ void main() async {
               ),
         ),
 
+        // 个人发票显示
+        Provider(create: (_) => InvoiceSelfRespositiory()),
+        ChangeNotifierProvider(
+          create:
+              (context) =>
+                  InvoiceSelfViewModel(context.read<InvoiceSelfRespositiory>()),
+        ),
+
+        // 主页监视
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
       ],
       child: const MyApp(),
