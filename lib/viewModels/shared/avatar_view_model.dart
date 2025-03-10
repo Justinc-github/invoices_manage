@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/models/repositories/avatar_repositiory.dart';
+import 'package:management_invoices/models/repositories/avatar_respositiory.dart';
 
 class AvatarViewModel extends ChangeNotifier {
   final AvatarRepository _avatarRepository;

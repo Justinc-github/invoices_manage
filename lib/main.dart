@@ -2,7 +2,7 @@ import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'package:management_invoices/models/repositories/avatar_repositiory.dart';
+import 'package:management_invoices/models/repositories/avatar_respositiory.dart';
 import 'package:management_invoices/models/repositories/invoice_self_respositiory.dart';
 
 import 'package:management_invoices/viewModels/home_view_model.dart';
