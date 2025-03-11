@@ -20,13 +20,15 @@ class HomeView extends StatelessWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showCloseDialog(context, homeViewModel);
       });
+    } else {
+      // 监听展示登录弹窗的状态
+      if (homeViewModel.isCloseLoginDialog) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showLoginDialog(context, homeViewModel);
+        });
+      }
     }
-    // 监听展示登录弹窗的状态
-    if (homeViewModel.isCloseLoginDialog) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showLoginDialog(context, homeViewModel);
-      });
-    }
+
     return NavigationView(
       pane: NavigationPane(
         selected: homeViewModel.selectedIndex,

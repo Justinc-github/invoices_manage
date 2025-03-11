@@ -1,5 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/repositories/avatar_respositiory.dart';
+import 'package:management_invoices/viewModels/home_view_model.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AvatarViewModel extends ChangeNotifier {
   final AvatarRepository _avatarRepository;
@@ -25,6 +28,25 @@ class AvatarViewModel extends ChangeNotifier {
       _isLoading = false; // 结束加载
       notifyListeners();
     }
+  }
+
+  // 退出登录
+  Future<void> toggleLoginStatus(BuildContext context) async {
+    try {
+      await clearUserInfo();
+      final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+      homeViewModel.updateSelectedIndex(0);
+      await homeViewModel.checkLoginStatus();
+    } catch (e) {
+      debugPrint('退出登录错误: $e');
+    }
+  }
+
+  // 清楚用户登录信息
+  Future<void> clearUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    // debugPrint(prefs.getString('userInfo'));
+    await prefs.remove('userInfo');
   }
 
   void errorClose() {
