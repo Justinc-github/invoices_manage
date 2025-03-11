@@ -30,86 +30,97 @@ class InvoiceSelfView extends StatelessWidget {
               right: 20.0,
               bottom: 20.0,
             ),
-            child: SfDataGrid(
-              source: invoiceDataSource,
-              columnWidthMode: ColumnWidthMode.fill,
-              gridLinesVisibility: GridLinesVisibility.both,
-              headerGridLinesVisibility: GridLinesVisibility.both,
-              columns: [
-                GridColumn(
-                  columnName: 'invoiceNum',
-                  label: Center(
-                    child: Text(
-                      '发票ID',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final availableWidth = constraints.maxWidth;
+                return SfDataGrid(
+                  columnWidthMode: ColumnWidthMode.none,
+                  gridLinesVisibility: GridLinesVisibility.both,
+                  headerGridLinesVisibility: GridLinesVisibility.both,
+                  rowHeight: 52,
+                  source: invoiceDataSource,
+                  columns: [
+                    GridColumn(
+                      columnName: 'invoiceNum',
+                      width: availableWidth * 0.2,
+                      label: Center(
+                        child: Text(
+                          '发票ID',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                GridColumn(
-                  columnName: 'invoiceType',
-                  label: Center(
-                    child: Text(
-                      '发票类型',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+                    GridColumn(
+                      columnName: 'invoiceType',
+                      width: availableWidth * 0.15,
+                      label: Center(
+                        child: Text(
+                          '发票类型',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-
-                GridColumn(
-                  columnName: 'invoiceDate',
-                  label: Center(
-                    child: Text(
-                      '开票日期',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+                    GridColumn(
+                      columnName: 'invoiceDate',
+                      width: availableWidth * 0.15,
+                      label: Center(
+                        child: Text(
+                          '开票日期',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                GridColumn(
-                  columnName: 'purchaserName',
-                  label: Center(
-                    child: Text(
-                      '购买者名称',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+                    GridColumn(
+                      columnName: 'purchaserName',
+                      width: availableWidth * 0.2,
+                      label: Center(
+                        child: Text(
+                          '购买物品',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                GridColumn(
-                  columnName: 'sellerName',
-                  label: Center(
-                    child: Text(
-                      '销售者名称',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+                    GridColumn(
+                      columnName: 'sellerName',
+                      width: availableWidth * 0.2,
+                      label: Center(
+                        child: Text(
+                          '销售者',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                GridColumn(
-                  columnName: 'amountInFigures',
-                  label: Center(
-                    child: Text(
-                      '金额',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
+                    GridColumn(
+                      columnName: 'amountInFigures',
+                      width: availableWidth * 0.1,
+                      label: Center(
+                        child: Text(
+                          '金额',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'MSYH',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ),
 
@@ -179,7 +190,11 @@ class InvoiceDataSource extends DataGridSource {
             return Container(
               alignment: Alignment.center,
               padding: EdgeInsets.all(8.0),
-              child: Text(dataGridCell.value.toString()),
+              child: Text(
+                dataGridCell.value.toString(),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
             );
           }).toList(),
     );

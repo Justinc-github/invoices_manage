@@ -36,16 +36,15 @@ class InvoiceSelfViewModel with ChangeNotifier {
       final result = await _invoiceSelfRespositiory.invoiceInfoGet(
         userInfo['user_id'],
       );
+
       _invoicesInfos = result ?? []; // 处理可能的 null 返回值
+      notifyListeners();
       calculateTotalAmount();
     } catch (e) {
       // 捕获并处理异常（如 JSON 解析错误、API 错误等）
       debugPrint('Error fetching invoices: $e');
       _invoicesInfos = []; // 发生错误时清空数据
       _totalAmount = 0.0;
-    } finally {
-      _isLoading = false;
-      notifyListeners(); // 最终通知状态更新
     }
   }
 
