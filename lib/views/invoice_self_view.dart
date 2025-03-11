@@ -16,6 +16,8 @@ class InvoiceSelfView extends StatelessWidget {
     final invoiceDataSource = InvoiceDataSource(
       invoices: invoiceSelfViewModel.invoiceInfos,
     );
+    invoiceSelfViewModel.invoiceSelf();
+
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -35,10 +37,10 @@ class InvoiceSelfView extends StatelessWidget {
               headerGridLinesVisibility: GridLinesVisibility.both,
               columns: [
                 GridColumn(
-                  columnName: 'id',
+                  columnName: 'invoiceNum',
                   label: Center(
                     child: Text(
-                      'ID',
+                      '发票ID',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontFamily: 'MSYH',
@@ -58,18 +60,7 @@ class InvoiceSelfView extends StatelessWidget {
                     ),
                   ),
                 ),
-                GridColumn(
-                  columnName: 'invoiceNum',
-                  label: Center(
-                    child: Text(
-                      '发票编号',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'MSYH',
-                      ),
-                    ),
-                  ),
-                ),
+
                 GridColumn(
                   columnName: 'invoiceDate',
                   label: Center(
@@ -123,6 +114,17 @@ class InvoiceSelfView extends StatelessWidget {
           ),
 
           const AvatarView(),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                '总金额: ¥${invoiceSelfViewModel.totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -135,14 +137,13 @@ class InvoiceDataSource extends DataGridSource {
         invoices.map<DataGridRow>((invoice) {
           return DataGridRow(
             cells: [
-              DataGridCell<int>(columnName: 'id', value: invoice.id),
-              DataGridCell<String>(
-                columnName: 'invoiceType',
-                value: invoice.invoiceType,
-              ),
               DataGridCell<String>(
                 columnName: 'invoiceNum',
                 value: invoice.invoiceNum,
+              ),
+              DataGridCell<String>(
+                columnName: 'invoiceType',
+                value: invoice.invoiceType,
               ),
               DataGridCell<String>(
                 columnName: 'invoiceDate',

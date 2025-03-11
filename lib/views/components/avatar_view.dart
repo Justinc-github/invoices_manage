@@ -26,7 +26,7 @@ class AvatarView extends StatelessWidget {
             child: GestureDetector(
               onTap: () => avatarViewModel.uploadAvatar(),
               child: CircleAvatar(
-                radius: 30,
+                radius: 25,
                 backgroundImage:
                     avatarViewModel.avatarUser != null &&
                             avatarViewModel.avatarUser!.isNotEmpty
