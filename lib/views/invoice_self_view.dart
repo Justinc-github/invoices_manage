@@ -65,7 +65,7 @@ class InvoiceSelfView extends StatelessWidget {
                   columnName: 'invoiceDate',
                   label: Center(
                     child: Text(
-                      '日期',
+                      '开票日期',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontFamily: 'MSYH',

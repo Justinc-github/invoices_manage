@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/repositories/avatar_respositiory.dart';
 import 'package:management_invoices/viewModels/home_view_model.dart';
+import 'package:management_invoices/viewModels/invoice_self_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,6 +35,12 @@ class AvatarViewModel extends ChangeNotifier {
   Future<void> toggleLoginStatus(BuildContext context) async {
     try {
       await clearUserInfo();
+      // 获取并清除发票数据
+      final invoiceSelfVM = Provider.of<InvoiceSelfViewModel>(
+        context,
+        listen: false,
+      );
+      invoiceSelfVM.clearInvoiceData();
       final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
       homeViewModel.updateSelectedIndex(0);
       await homeViewModel.checkLoginStatus();
