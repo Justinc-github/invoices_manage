@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:decimal/decimal.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/invoice_self_model.dart';
 import 'package:management_invoices/models/repositories/invoice_self_respositiory.dart';
@@ -10,7 +11,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
   InvoiceSelfViewModel(this._invoiceSelfRespositiory);
 
   bool _isLoading = false; // 新增加载状态
-  double _totalAmount = 0.0; // 存储发票的总金额
+  Decimal _totalAmount = Decimal.zero; // 存储发票的总金额
 
   // 分页相关状态
   List<InvoiceModel> _invoicesInfos = [];
@@ -21,7 +22,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
 
   List<InvoiceModel> get invoiceInfos => _invoicesInfos;
   bool get isLoading => _isLoading;
-  double get totalAmount => _totalAmount;
+  Decimal get totalAmount => _totalAmount;
   int get currentPage => _currentPage;
   int get itemsPerPage => _itemsPerPage;
   int get totalItems => _totalItems;
@@ -64,15 +65,15 @@ class InvoiceSelfViewModel with ChangeNotifier {
     } catch (e) {
       debugPrint('Error fetching invoices: $e');
       _invoicesInfos = [];
-      _totalAmount = 0.0;
+      _totalAmount = Decimal.zero;
       _isLoading = false;
       notifyListeners();
     }
   }
 
   void calculateTotalAmount() {
-    _totalAmount = _invoicesInfos.fold(
-      0,
+    _totalAmount = _invoicesInfos.fold<Decimal>(
+      Decimal.zero,
       (sum, item) => sum + item.amountInFigures,
     );
     notifyListeners();

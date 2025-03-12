@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/invoice_self_model.dart';
 import 'package:management_invoices/viewModels/invoice_self_view_model.dart';
@@ -221,7 +222,7 @@ class InvoiceDataSource extends DataGridSource {
                     columnName: 'sellerName',
                     value: invoice.sellerName,
                   ),
-                  DataGridCell<double>(
+                  DataGridCell<Decimal>(
                     columnName: 'amountInFigures',
                     value: invoice.amountInFigures,
                   ),

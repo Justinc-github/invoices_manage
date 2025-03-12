@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 
 class InvoiceModel extends Equatable {
@@ -7,7 +8,7 @@ class InvoiceModel extends Equatable {
   final String invoiceDate;
   final String purchaserName;
   final String sellerName;
-  final double amountInFigures;
+  final Decimal amountInFigures;
 
   const InvoiceModel({
     required this.id,
@@ -27,7 +28,7 @@ class InvoiceModel extends Equatable {
       invoiceDate: json['invoice_date'] as String,
       purchaserName: json['commodity_name'] as String,
       sellerName: json['seller_name'] as String,
-      amountInFigures: (json['amount_in_figures'] as num).toDouble(),
+      amountInFigures: Decimal.parse(json['amount_in_figures'].toString()),
     );
   }
 
