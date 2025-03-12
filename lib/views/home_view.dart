@@ -1,4 +1,5 @@
 import 'package:management_invoices/views/components/dialog_view.dart';
+import 'package:management_invoices/views/invoice_upload_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -46,6 +47,12 @@ class HomeView extends StatelessWidget {
             title: const Text('我的发票'),
             mouseCursor: SystemMouseCursors.click,
             body: const InvoiceSelfView(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.upload),
+            title: const Text('发票上传'),
+            mouseCursor: SystemMouseCursors.click,
+            body: const InvoiceUploadView(),
           ),
         ],
         footerItems: [
