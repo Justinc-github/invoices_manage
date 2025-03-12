@@ -1,18 +1,17 @@
+// invoice_self_respositiory.dart
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/invoice_self_model.dart';
 
 class InvoiceSelfRespositiory {
-  static const String _baseUrl = 'http://127.0.0.1:8000';
+  static const String _baseUrl = 'http://47.95.171.19';
   static const String _invoiceGetPath = '/admin_invoice/invoice_user';
-  InvoiceSelfRespositiory({Dio? dio}) : dio = dio ?? Dio(); // 允许自定义 Dio 实例
-  final Dio dio; // 通过依赖注入 Dio 实例
+  InvoiceSelfRespositiory({Dio? dio}) : dio = dio ?? Dio();
+  final Dio dio;
 
-  // 发票数据获取
-  Future<List<InvoiceModel>?> invoiceInfoGet(userId) async {
+  Future<List<InvoiceModel>?> invoiceInfoGet(String userId) async {
     try {
       final response = await dio.get('$_baseUrl$_invoiceGetPath/$userId');
-
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         return data.map((json) => InvoiceModel.fromJson(json)).toList();
@@ -21,9 +20,6 @@ class InvoiceSelfRespositiory {
     } on DioException catch (e) {
       debugPrint('Error fetching invoices: ${e.message}');
       return [];
-    } catch (e) {
-      debugPrint('其他异常：$e');
     }
-    return [];
   }
 }

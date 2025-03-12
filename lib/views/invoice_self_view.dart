@@ -12,12 +12,13 @@ class InvoiceSelfView extends StatelessWidget {
   Widget build(BuildContext context) {
     final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
 
-    // 创建数据源
-    final invoiceDataSource = InvoiceDataSource(
-      invoices: invoiceSelfViewModel.invoiceInfos,
-    );
-    invoiceSelfViewModel.invoiceSelf();
-
+    // 添加数据加载逻辑
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (invoiceSelfViewModel.invoiceInfos.isEmpty &&
+          !invoiceSelfViewModel.isLoading) {
+        invoiceSelfViewModel.invoiceSelf();
+      }
+    });
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -28,13 +29,16 @@ class InvoiceSelfView extends StatelessWidget {
               top: 100.0,
               left: 20.0,
               right: 20.0,
-              bottom: 20.0,
+              bottom: 80.0,
             ),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final availableWidth = constraints.maxWidth;
+                final invoiceDataSource = InvoiceDataSource(
+                  invoices: invoiceSelfViewModel.paginatedData,
+                );
+
                 return SfDataGrid(
-                  columnWidthMode: ColumnWidthMode.none,
+                  columnWidthMode: ColumnWidthMode.fill,
                   gridLinesVisibility: GridLinesVisibility.both,
                   headerGridLinesVisibility: GridLinesVisibility.both,
                   rowHeight: 52,
@@ -42,101 +46,149 @@ class InvoiceSelfView extends StatelessWidget {
                   columns: [
                     GridColumn(
                       columnName: 'invoiceNum',
-                      width: availableWidth * 0.2,
-                      label: Center(
-                        child: Text(
-                          '发票ID',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('发票ID'),
                     ),
                     GridColumn(
                       columnName: 'invoiceType',
-                      width: availableWidth * 0.15,
-                      label: Center(
-                        child: Text(
-                          '发票类型',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('发票类型'),
                     ),
                     GridColumn(
                       columnName: 'invoiceDate',
-                      width: availableWidth * 0.15,
-                      label: Center(
-                        child: Text(
-                          '开票日期',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('开票日期'),
                     ),
                     GridColumn(
                       columnName: 'purchaserName',
-                      width: availableWidth * 0.2,
-                      label: Center(
-                        child: Text(
-                          '购买物品',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('购买物品'),
                     ),
                     GridColumn(
                       columnName: 'sellerName',
-                      width: availableWidth * 0.2,
-                      label: Center(
-                        child: Text(
-                          '销售者',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('销售者'),
                     ),
                     GridColumn(
                       columnName: 'amountInFigures',
-                      width: availableWidth * 0.1,
-                      label: Center(
-                        child: Text(
-                          '金额',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'MSYH',
-                          ),
-                        ),
-                      ),
+                      label: _buildHeader('金额'),
                     ),
                   ],
                 );
               },
             ),
           ),
-
           const AvatarView(),
           Positioned(
-            right: 20,
-            bottom: 20,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '总金额: ¥${invoiceSelfViewModel.totalAmount.toStringAsFixed(2)}',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildPaginationControls(context),
+          ),
+          Positioned(
+            right: 15,
+            bottom: 15,
+            child: Text(
+              '总金额: ¥${invoiceSelfViewModel.totalAmount.toStringAsFixed(2)}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(String text) {
+    return Center(
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MSYH'),
+      ),
+    );
+  }
+
+  Widget _buildPaginationControls(BuildContext context) {
+    final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
+
+    return Container(
+      color: Colors.grey[60],
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: IconButton(
+                  icon: const Icon(FluentIcons.chevron_left),
+                  onPressed:
+                      invoiceSelfViewModel.currentPage > 1
+                          ? () => invoiceSelfViewModel.setCurrentPage(
+                            invoiceSelfViewModel.currentPage - 1,
+                          )
+                          : null,
+                ),
+              ),
+              SizedBox(width: 10),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: Text(
+                  '第 ${invoiceSelfViewModel.currentPage} 页 / 共 ${invoiceSelfViewModel.totalPages} 页',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(width: 10),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: IconButton(
+                  icon: const Icon(FluentIcons.chevron_right),
+                  onPressed:
+                      invoiceSelfViewModel.currentPage <
+                              invoiceSelfViewModel.totalPages
+                          ? () => invoiceSelfViewModel.setCurrentPage(
+                            invoiceSelfViewModel.currentPage + 1,
+                          )
+                          : null,
+                ),
+              ),
+              const SizedBox(width: 20),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 120),
+                  child: ComboBox<int>(
+                    value: invoiceSelfViewModel.itemsPerPage,
+                    items: [
+                      ComboBoxItem(
+                        value: 10,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('10 条/页'),
+                        ),
+                      ),
+                      ComboBoxItem(
+                        value: 20,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('20 条/页'),
+                        ),
+                      ),
+                      ComboBoxItem(
+                        value: 50,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('50 条/页'),
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        invoiceSelfViewModel.setItemsPerPage(value);
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -145,36 +197,38 @@ class InvoiceSelfView extends StatelessWidget {
 class InvoiceDataSource extends DataGridSource {
   InvoiceDataSource({required List<InvoiceModel> invoices}) {
     _invoices =
-        invoices.map<DataGridRow>((invoice) {
-          return DataGridRow(
-            cells: [
-              DataGridCell<String>(
-                columnName: 'invoiceNum',
-                value: invoice.invoiceNum,
+        invoices
+            .map<DataGridRow>(
+              (invoice) => DataGridRow(
+                cells: [
+                  DataGridCell<String>(
+                    columnName: 'invoiceNum',
+                    value: invoice.invoiceNum,
+                  ),
+                  DataGridCell<String>(
+                    columnName: 'invoiceType',
+                    value: invoice.invoiceType,
+                  ),
+                  DataGridCell<String>(
+                    columnName: 'invoiceDate',
+                    value: invoice.invoiceDate,
+                  ),
+                  DataGridCell<String>(
+                    columnName: 'purchaserName',
+                    value: invoice.purchaserName,
+                  ),
+                  DataGridCell<String>(
+                    columnName: 'sellerName',
+                    value: invoice.sellerName,
+                  ),
+                  DataGridCell<double>(
+                    columnName: 'amountInFigures',
+                    value: invoice.amountInFigures,
+                  ),
+                ],
               ),
-              DataGridCell<String>(
-                columnName: 'invoiceType',
-                value: invoice.invoiceType,
-              ),
-              DataGridCell<String>(
-                columnName: 'invoiceDate',
-                value: invoice.invoiceDate,
-              ),
-              DataGridCell<String>(
-                columnName: 'purchaserName',
-                value: invoice.purchaserName,
-              ),
-              DataGridCell<String>(
-                columnName: 'sellerName',
-                value: invoice.sellerName,
-              ),
-              DataGridCell<double>(
-                columnName: 'amountInFigures',
-                value: invoice.amountInFigures,
-              ),
-            ],
-          );
-        }).toList();
+            )
+            .toList();
   }
 
   List<DataGridRow> _invoices = [];
@@ -189,7 +243,7 @@ class InvoiceDataSource extends DataGridSource {
           row.getCells().map<Widget>((dataGridCell) {
             return Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 dataGridCell.value.toString(),
                 overflow: TextOverflow.ellipsis,
