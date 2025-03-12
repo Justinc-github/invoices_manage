@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/models/invoice_self_model.dart';
 import 'package:management_invoices/viewModels/invoice_self_view_model.dart';
+import 'package:management_invoices/viewModels/invoice_upload_view_model.dart';
 import 'package:management_invoices/views/components/avatar_view.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -12,10 +13,15 @@ class InvoiceSelfView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
+    final invoiceUploadViewModel = context.watch<InvoiceUploadViewModel>();
 
     // 添加数据加载逻辑
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (invoiceSelfViewModel.invoiceInfos.isEmpty &&
+      // 当上传成功时，强制刷新数据
+      if (invoiceUploadViewModel.isUploaed) {
+        invoiceSelfViewModel.invoiceSelf();
+        invoiceUploadViewModel.resetUploadStatus(); // 新增方法重置状态
+      } else if (invoiceSelfViewModel.invoiceInfos.isEmpty &&
           !invoiceSelfViewModel.isLoading) {
         invoiceSelfViewModel.invoiceSelf();
       }

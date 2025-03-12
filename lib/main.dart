@@ -1,3 +1,5 @@
+import 'package:management_invoices/models/repositories/invoice_upload_respositiory.dart';
+import 'package:management_invoices/viewModels/invoice_upload_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
@@ -39,6 +41,15 @@ void main() async {
           create:
               (context) =>
                   InvoiceSelfViewModel(context.read<InvoiceSelfRespositiory>()),
+        ),
+
+        // 用户发票上传
+        Provider(create: (_) => InvoiceUploadRespositiory()),
+        ChangeNotifierProvider(
+          create:
+              (context) => InvoiceUploadViewModel(
+                context.read<InvoiceUploadRespositiory>(),
+              ),
         ),
 
         // 用户登录

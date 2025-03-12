@@ -32,7 +32,7 @@ class AvatarView extends StatelessWidget {
                             avatarViewModel.avatarUser!.isNotEmpty
                         ? NetworkImage(avatarViewModel.avatarUser.toString())
                         : const NetworkImage(
-                              'https://admin-invoice-oss.oss-cn-beijing.aliyuncs.com/%E5%A4%B4%E5%83%8F.jpg',
+                              'https://pcsdata.baidu.com/thumbnail/4e1e5be79v18b6e271a2209293c3fd21?fid=1102081744007-16051585-1015676301775988&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-DPcQgW%2B0dWeiWJDgkAz68Ldp4RI%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=484972545535073687&dp-callid=0&time=1741759200&bus_no=26&size=c1600_u1600&quality=100&vuk=-&ft=video',
                             )
                             as ImageProvider,
               ),
