@@ -1,13 +1,13 @@
-import 'package:management_invoices/views/components/dialog_view.dart';
-import 'package:management_invoices/views/invoice_upload_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-import 'package:management_invoices/viewModels/home_view_model.dart';
+import 'package:management_invoices/shared/views/dialog_view.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
 
-import 'package:management_invoices/views/help_view.dart';
-import 'package:management_invoices/views/invoice_self_view.dart';
-import 'package:management_invoices/views/components/avatar_view.dart';
+import 'package:management_invoices/features/help/views/help_view.dart';
+import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
+import 'package:management_invoices/features/home/views/home_content_view.dart';
+import 'package:management_invoices/features/invoice/views/invoice_upload_view.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -40,7 +40,7 @@ class HomeView extends StatelessWidget {
             icon: const Icon(FluentIcons.home),
             title: const Text('首页'),
             mouseCursor: SystemMouseCursors.click,
-            body: const _HomeContent(),
+            body: const HomeContentView(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.invoice),
@@ -69,21 +69,6 @@ class HomeView extends StatelessWidget {
           openMaxWidth: 250,
           openWidth: 200,
         ),
-      ),
-    );
-  }
-}
-
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: double.infinity,
-      child: Stack(
-        children: [const Center(child: Text('主页')), const AvatarView()],
       ),
     );
   }

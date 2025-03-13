@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/viewModels/home_view_model.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
 
 // 关闭确认弹窗
 void showCloseDialog(BuildContext context, HomeViewModel homeViewModel) {
@@ -108,6 +108,14 @@ void showLoginDialog(BuildContext context, HomeViewModel homeViewModel) {
                   );
                 }),
               ),
+              if (homeViewModel.loginError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    homeViewModel.loginError!,
+                    style: TextStyle(color: Colors.red['light']),
+                  ),
+                ),
             ],
           ),
         ),

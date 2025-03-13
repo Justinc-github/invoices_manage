@@ -1,7 +1,27 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
+// 主题配置
+class AppThemes {
+  static final FluentThemeData lightTheme = FluentThemeData(
+    brightness: Brightness.light,
+    fontFamily: 'MSYH',
+    accentColor: Colors.blue,
+  );
+
+  static final FluentThemeData darkTheme = FluentThemeData(
+    brightness: Brightness.dark,
+    accentColor: Colors.blue,
+  );
+}
+
+// 窗口配置
 Future<void> windowsinItialization() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  // 等待窗口配置完成
+  await windowManager.waitUntilReadyToShow();
   // 1. 配置窗口行为 (阻止关闭)
   await windowManager.setPreventClose(true);
 

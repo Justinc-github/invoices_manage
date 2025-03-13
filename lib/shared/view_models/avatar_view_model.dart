@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/models/repositories/avatar_respositiory.dart';
-import 'package:management_invoices/viewModels/home_view_model.dart';
-import 'package:management_invoices/viewModels/invoice_self_view_model.dart';
+import 'package:management_invoices/core/repositories/avatar_respositiory.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

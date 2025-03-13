@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/models/repositories/invoice_upload_respositiory.dart';
+import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InvoiceUploadViewModel extends ChangeNotifier {

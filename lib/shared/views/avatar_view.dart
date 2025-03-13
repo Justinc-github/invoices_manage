@@ -1,7 +1,7 @@
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
-import 'package:management_invoices/viewModels/shared/avatar_view_model.dart';
+import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 
 class AvatarView extends StatelessWidget {
   const AvatarView({super.key});

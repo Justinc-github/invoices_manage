@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/models/repositories/auth_respositiory.dart';
+import 'package:management_invoices/core/repositories/auth_respositiory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
