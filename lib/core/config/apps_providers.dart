@@ -1,15 +1,16 @@
-import 'package:management_invoices/features/help/view_models/help_view_model.dart';
+import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-import 'package:management_invoices/core/repositories/auth_respositiory.dart';
+import 'package:management_invoices/core/repositories/auth_repository.dart';
 import 'package:management_invoices/core/repositories/avatar_respositiory.dart';
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_self_respositiory.dart';
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
 
+import 'package:management_invoices/features/help/view_models/help_view_model.dart';
+import 'package:management_invoices/features/home/view_models/home_content_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
-import 'package:management_invoices/features/home/view_models/home_content_view_model.dart';
 
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
@@ -49,11 +50,12 @@ class AppProviders extends StatelessWidget {
         ),
 
         // 用户登录
-        Provider(create: (_) => AuthRespositiory()),
+        Provider(create: (_) => AuthRepository()),
         ChangeNotifierProvider(
-          create: (context) => HomeViewModel(context.read<AuthRespositiory>()),
+          create: (context) => AuthViewModel(context.read<AuthRepository>()),
         ),
 
+        ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => HomeContentViewModel()),
         ChangeNotifierProvider(create: (_) => HelpViewModel()),
       ],

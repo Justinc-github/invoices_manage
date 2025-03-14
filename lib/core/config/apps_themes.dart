@@ -31,7 +31,7 @@ Future<void> windowsinItialization() async {
 
   // 3. 定义窗口尺寸与约束 (先尺寸后最小尺寸)
   await windowManager.setSize(const Size(1280, 720));
-  await windowManager.setMinimumSize(const Size(1280, 720)); // 固定窗口不可缩放
+  await windowManager.setMinimumSize(const Size(1280, 720)); // 固定窗口最小尺寸
 
   // 4. 计算窗口居中位置 (依赖已设置的尺寸)
   await windowManager.center();

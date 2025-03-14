@@ -1,3 +1,5 @@
+import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
+import 'package:management_invoices/features/auth/views/login_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -14,26 +16,35 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeViewModel = context.watch<HomeViewModel>();
+    final home = context.watch<HomeViewModel>();
+    final auth = context.watch<AuthViewModel>();
 
-    // 监听关闭确认弹窗的状态
-    if (homeViewModel.isClosing) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showCloseDialog(context, homeViewModel);
-      });
-    } else {
-      // 监听展示登录弹窗的状态
-      if (homeViewModel.isCloseLoginDialog) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showLoginDialog(context, homeViewModel);
-        });
+    // 登录状态监听
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (home.isClosing) {
+        showCloseDialog(context, home);
       }
-    }
+      if (auth.isDialogShow && !auth.isLoggedIn) {
+        debugPrint('1');
+        auth.dialogClose();
+        showDialog(
+          context: context,
+          barrierColor: Color.fromARGB(
+            (0.8 * 255).round(), // Alpha 值 0-255（153 = 0.6×255）
+            0, // Red
+            0, // Green
+            0, // Blue
+          ),
+          barrierDismissible: false,
+          builder: (context) => const LoginDialog(),
+        );
+      }
+    });
 
     return NavigationView(
       pane: NavigationPane(
-        selected: homeViewModel.selectedIndex,
-        onChanged: homeViewModel.updateSelectedIndex,
+        selected: home.selectedIndex,
+        onChanged: home.updateSelectedIndex,
         displayMode: PaneDisplayMode.compact,
         items: [
           PaneItem(

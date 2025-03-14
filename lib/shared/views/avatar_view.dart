@@ -1,3 +1,4 @@
+import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
@@ -9,6 +10,7 @@ class AvatarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final avatarViewModel = context.watch<AvatarViewModel>();
+    final auth = context.watch<AuthViewModel>();
     return Positioned(
       right: 20,
       top: 20,
@@ -31,9 +33,7 @@ class AvatarView extends StatelessWidget {
                     avatarViewModel.avatarUser != null &&
                             avatarViewModel.avatarUser!.isNotEmpty
                         ? NetworkImage(avatarViewModel.avatarUser.toString())
-                        : const NetworkImage(
-                              'https://pcsdata.baidu.com/thumbnail/4e1e5be79v18b6e271a2209293c3fd21?fid=1102081744007-16051585-1015676301775988&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-DPcQgW%2B0dWeiWJDgkAz68Ldp4RI%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=484972545535073687&dp-callid=0&time=1741759200&bus_no=26&size=c1600_u1600&quality=100&vuk=-&ft=video',
-                            )
+                        : AssetImage('assets/images/touxiang.jpg')
                             as ImageProvider,
               ),
             ),
@@ -52,7 +52,7 @@ class AvatarView extends StatelessWidget {
                       color: material.Colors.red,
                       title: '退出登录',
                     ),
-                    onTap: () => avatarViewModel.toggleLoginStatus(context),
+                    onTap: () => auth.logout(),
                   ),
                 ],
           ),
