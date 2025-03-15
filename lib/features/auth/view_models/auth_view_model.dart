@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:management_invoices/core/repositories/auth_repository.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository; // 初始化认证仓库
-  AuthViewModel(this._repository) {
+  final AvatarViewModel _avatarViewModel; // 新增
+  AuthViewModel(this._repository, this._avatarViewModel) {
     checkLoginStatus();
   } // 登录弹窗是否显示
 
@@ -29,7 +31,7 @@ class AuthViewModel extends ChangeNotifier {
 
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    _isLoggedIn = prefs.getString('userInfo') != null;
+    _isLoggedIn = prefs.getString('auth_token') != null;
     debugPrint('登录状态$isLoggedIn'.toString());
     notifyListeners();
   }
@@ -43,11 +45,12 @@ class AuthViewModel extends ChangeNotifier {
         usernameController.text,
         passwordController.text,
       );
-      debugPrint(success.toString());
       if (success) {
         _errorMessage = null;
+
         Navigator.pop(context);
         await clearCredentials();
+        _avatarViewModel.avatarUrlGet();
         notifyListeners();
       } else {
         _errorMessage = message;

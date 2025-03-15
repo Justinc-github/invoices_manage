@@ -52,7 +52,11 @@ class AppProviders extends StatelessWidget {
         // 用户登录
         Provider(create: (_) => AuthRepository()),
         ChangeNotifierProvider(
-          create: (context) => AuthViewModel(context.read<AuthRepository>()),
+          create:
+              (context) => AuthViewModel(
+                context.read<AuthRepository>(),
+                context.read<AvatarViewModel>(),
+              ),
         ),
 
         ChangeNotifierProvider(create: (_) => HomeViewModel()),

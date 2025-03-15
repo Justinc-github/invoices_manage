@@ -3,34 +3,27 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AvatarRepository {
-  static const String _baseUrl = 'http://47.95.171.19';
-  static const String _uploadPath = '/img_upload'; // 路径常量提取
+  static const String _uploadPath = 'http://127.0.0.1:8000/img_upload';
+  final _uploadUrl = 'https://www.picgo.net/api/1/upload';
   final Dio dio; // 通过依赖注入 Dio 实例
 
   AvatarRepository({Dio? dio}) : dio = dio ?? Dio(); // 允许自定义 Dio 实例
 
   /// 返回头像 URL，失败时返回 null
-  Future<String?> uploadAvatar(String userId) async {
+  Future<String?> uploadAvatarRes(String userId) async {
     try {
-      // 构建完整的请求URL
-      final uploadUrl =
-          Uri.parse(
-            '$_baseUrl$_uploadPath',
-          ).replace(queryParameters: {'user_id': userId}).toString();
-
       // 选择文件
       final fileResult = await FilePicker.platform.pickFiles(
         type: FileType.image,
-        allowMultiple: false, // 明确禁止多选
+        allowMultiple: false, // 禁止多选
       );
-
       if (fileResult == null || fileResult.files.isEmpty) {
         debugPrint('用户取消选择或未选中文件');
         return null;
       }
-
       final filePath = fileResult.files.single.path;
       if (filePath == null) {
         debugPrint('文件路径无效');
@@ -39,24 +32,32 @@ class AvatarRepository {
 
       // 创建FormData
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(filePath),
+        'source': await MultipartFile.fromFile(filePath),
+        'key':
+            'chv_BoyC_26e5b9a86f444df7731c897fc7031c7e85cd802fb2fd6c32027f3f45b8d7c551482994a1d88529293ce8deabe267f946265a8564d59a77c44b4f8d78c248d016',
+        'format': 'json',
+        'album_id': 'Sljaq',
       });
 
       // 发起请求
       final response = await dio.post<String>(
-        uploadUrl,
+        _uploadUrl,
         data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-          sendTimeout: const Duration(seconds: 10),
-        ),
+        options: Options(sendTimeout: const Duration(seconds: 10)),
       );
-
       // 处理响应
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.data!) as Map<String, dynamic>;
-        final avatarUrl = jsonData['img_url'] as String?;
-        return avatarUrl;
+        var avatarUrl = jsonData['image']['url'] as String?;
+        if (avatarUrl != null) {
+          // 发起请求
+          avatarUrl = await _avatarSave(avatarUrl, userId);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('avatar', avatarUrl);
+          return avatarUrl;
+        }
+      } else if (response.statusCode == 400) {
+        return 'error';
       } else {
         throw DioException(
           requestOptions: response.requestOptions,
@@ -67,5 +68,28 @@ class AvatarRepository {
     } on DioException catch (e) {
       return e.message;
     }
+    return null;
+  }
+
+  Future<String> _avatarSave(avatarUrl, userId) async {
+    try {
+      final response = await dio.post<String>(
+        _uploadPath,
+        data: {'img_url': avatarUrl, 'user_id': userId},
+      );
+      if (response.statusCode == 200) {
+        return avatarUrl;
+      }
+    } on DioException catch (e) {
+      // 处理Dio特有的错误
+      if (e.response != null) {
+        throw Exception(
+          '请求失败，状态码: ${e.response?.statusCode}，错误信息: ${e.response?.data}',
+        );
+      } else {
+        throw Exception('请求失败: ${e.message}');
+      }
+    }
+    return avatarUrl;
   }
 }
