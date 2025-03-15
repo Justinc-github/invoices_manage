@@ -1,4 +1,6 @@
+import 'package:management_invoices/core/repositories/members_repository.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
+import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -59,6 +61,12 @@ class AppProviders extends StatelessWidget {
               ),
         ),
 
+        // 所有用户的信息
+        Provider(create: (_) => MembersRepository()),
+        ChangeNotifierProvider(
+          create:
+              (context) => MembersViewModel(context.read<MembersRepository>()),
+        ),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
         ChangeNotifierProvider(create: (_) => HomeContentViewModel()),
         ChangeNotifierProvider(create: (_) => HelpViewModel()),

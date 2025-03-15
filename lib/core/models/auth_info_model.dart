@@ -1,22 +1,24 @@
 import 'package:equatable/equatable.dart';
 
 class AuthInfoModel extends Equatable {
-  final String username;
-  final String email;
-  final String teamName;
-  final String role;
-  final String createdAt;
-  final int status;
-  final int id;
+  final int? id;
+  final String? username;
+  final String? email;
+  final int? status;
+  final String? createdAt;
+  final int? teamId;
+  final String? teamName;
+  final String? role;
 
   const AuthInfoModel({
+    required this.id,
     required this.username,
     required this.email,
+    required this.status,
+    required this.createdAt,
+    required this.teamId,
     required this.teamName,
     required this.role,
-    required this.createdAt,
-    required this.status,
-    required this.id,
   });
 
   factory AuthInfoModel.fromJson(Map<String, dynamic> json) {
@@ -24,10 +26,11 @@ class AuthInfoModel extends Equatable {
       id: json['id'],
       username: json['username'],
       email: json['email'],
+      status: json['status'],
+      createdAt: json['created_at'],
+      teamId: json['team_id'],
       teamName: json['team_name'],
       role: json['role'],
-      createdAt: json['created_at'],
-      status: json['status'],
     );
   }
 
@@ -39,6 +42,7 @@ class AuthInfoModel extends Equatable {
     teamName,
     role,
     createdAt,
+    teamId,
     status,
   ];
 }

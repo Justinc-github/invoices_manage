@@ -1,5 +1,6 @@
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -30,10 +31,10 @@ class HomeView extends StatelessWidget {
         showDialog(
           context: context,
           barrierColor: Color.fromARGB(
-            (0.8 * 255).round(), // Alpha 值 0-255（153 = 0.6×255）
-            0, // Red
-            0, // Green
-            0, // Blue
+            (0.8 * 255).round(),
+            0, // R
+            0, // G
+            0, // B
           ),
           barrierDismissible: false,
           builder: (context) => const LoginDialog(),
@@ -58,6 +59,12 @@ class HomeView extends StatelessWidget {
             title: const Text('我的发票'),
             mouseCursor: SystemMouseCursors.click,
             body: const InvoiceSelfView(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.people),
+            title: const Text('所有成员'),
+            mouseCursor: SystemMouseCursors.click,
+            body: const MembersAllView(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.upload),
