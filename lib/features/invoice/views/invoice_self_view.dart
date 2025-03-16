@@ -18,7 +18,7 @@ class InvoiceSelfView extends StatelessWidget {
     // 添加数据加载逻辑
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // 当上传成功时，强制刷新数据
-      if (invoiceUploadViewModel.isUploaed) {
+      if (invoiceUploadViewModel.isUploaded) {
         invoiceSelfViewModel.invoiceSelf();
         invoiceUploadViewModel.resetUploadStatus(); // 新增方法重置状态
       } else if (invoiceSelfViewModel.invoiceInfos.isEmpty &&

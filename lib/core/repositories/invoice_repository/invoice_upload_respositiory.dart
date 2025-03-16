@@ -7,13 +7,6 @@ import 'package:flutter/foundation.dart';
 class InvoiceUploadRespositiory {
   final Dio _dio = Dio();
 
-  // 阿里云 OSS 配置
-  final String accessKeyId = 'LTAI5t7H5UivbuturndhsXSL';
-  final String accessKeySecret = 'oqnASV1WIzmm7bhFQWPR8RR6AZoMCd';
-  final String endpoint =
-      'oss-cn-beijing.aliyuncs.com'; // 例如 oss-cn-beijing.aliyuncs.com
-  final String bucketName = 'admin-invoice-oss';
-
   // 初始化配置
   void init() {
     // 配置 Dio
@@ -29,7 +22,6 @@ class InvoiceUploadRespositiory {
       allowMultiple: true, // 关键参数：允许选择多个
     );
     if (result == null || result.files.isEmpty) return null;
-    debugPrint(result.toString());
     // 过滤掉可能为空的路径
     return result.files
         .where((file) => file.path != null)
@@ -40,33 +32,21 @@ class InvoiceUploadRespositiory {
   // OSS上传
   Future<String> uploadToOSS(File file, int userId) async {
     await uploadImage(file, userId);
-    return 'https://admin-invoice-oss.oss-cn-beijing.aliyuncs.com/invoice/'
-        '$userId/${file.uri.pathSegments.last}';
+    return 'https://fapiao.s3.bitiful.net/images/$userId/${file.uri.pathSegments.last}';
   }
 
-  // 上传图片到阿里云 OSS
+  // 上传图片到缤纷云
   Future<void> uploadImage(File imageFile, int userId) async {
     try {
-      final fileName =
-          'invoice/$userId/${imageFile.uri.pathSegments.last}'; // 上传时的文件路径
+      final fileName = '$userId/${imageFile.uri.pathSegments.last}'; // 上传时的文件路径
       final formData = FormData.fromMap({
-        'key': fileName, // 在 OSS 中存储的文件名
-        'file': await MultipartFile.fromFile(imageFile.path),
+        'file': await MultipartFile.fromFile(
+          imageFile.path,
+          filename: fileName,
+        ),
       });
-
-      final url = 'https://$bucketName.$endpoint';
-
-      final response = await _dio.post(url, data: formData);
-
-      if (response.statusCode == 200 || response.statusCode == 204) {
-        if (kDebugMode) {
-          print("文件上传成功: ${response.data}");
-        }
-      } else {
-        if (kDebugMode) {
-          print("上传失败: ${response.statusCode}");
-        }
-      }
+      final url = 'http://127.0.0.1:8000/upload';
+      await _dio.post(url, data: formData);
     } catch (e) {
       if (kDebugMode) {
         print("上传图片时发生错误: $e");
@@ -75,30 +55,23 @@ class InvoiceUploadRespositiory {
   }
 
   // 提交到后端使用Dio
-  Future<void> submitInvoiceInfo(String imageUrl, int userId) async {
+  Future<String?> submitInvoiceInfo(String imageUrl, int userId) async {
     final dio = Dio();
-
     try {
       final response = await dio.post(
-        'http://47.95.171.19/admin_invoice/invoice_info',
+        'http://127.0.0.1:8000/admin_invoice/invoice_info',
         options: Options(headers: {"Content-Type": "application/json"}),
         data: {'image_url': imageUrl, 'user_id': userId.toString()},
       );
+      debugPrint(response.statusCode.toString());
+      debugPrint(response.data['message'].toString());
 
-      if (response.statusCode != 200) {
-        throw Exception('服务器返回错误: ${response.data}');
-      }
-    } on DioException catch (e) {
-      // 处理Dio特有的错误
-      if (e.response != null) {
-        throw Exception(
-          '请求失败，状态码: ${e.response?.statusCode}，错误信息: ${e.response?.data}',
-        );
-      } else {
-        throw Exception('请求失败: ${e.message}');
+      if (response.statusCode == 200) {
+        return response.data['message'];
       }
     } catch (e) {
       throw Exception('未知错误: $e');
     }
+    return null;
   }
 }
