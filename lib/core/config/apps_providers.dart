@@ -43,11 +43,11 @@ class AppProviders extends StatelessWidget {
         ),
 
         // 发票上传
-        Provider(create: (_) => InvoiceUploadRespositiory()),
+        Provider(create: (_) => InvoiceUploadRepository()),
         ChangeNotifierProvider(
           create:
               (context) => InvoiceUploadViewModel(
-                context.read<InvoiceUploadRespositiory>(),
+                context.read<InvoiceUploadRepository>(),
               ),
         ),
 

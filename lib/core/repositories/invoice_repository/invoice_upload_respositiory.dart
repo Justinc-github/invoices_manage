@@ -1,77 +1,74 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as path; // 新增路径处理
 
-class InvoiceUploadRespositiory {
+class InvoiceUploadRepository {
+  // 类名拼写修正
   final Dio _dio = Dio();
 
-  // 初始化配置
   void init() {
-    // 配置 Dio
-    _dio.options.connectTimeout = Duration(seconds: 5); // 设置连接超时
-    _dio.options.receiveTimeout = Duration(seconds: 5); // 请求超时
+    _dio.options.connectTimeout = Duration(seconds: 5);
+    _dio.options.receiveTimeout = Duration(seconds: 5);
+    // 添加请求日志拦截器
+    _dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestBody: true,
+        responseBody: true,
+        error: true,
+      ),
+    );
   }
 
-  // 文件选择方法
   Future<List<File>?> pickFiles() async {
-    // 方法名改为复数
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,
-      allowMultiple: true, // 关键参数：允许选择多个
+      allowMultiple: true,
     );
-    if (result == null || result.files.isEmpty) return null;
-    // 过滤掉可能为空的路径
-    return result.files
-        .where((file) => file.path != null)
+    return result?.files
+        .where((file) => file.path?.isNotEmpty ?? false)
         .map((file) => File(file.path!))
         .toList();
   }
 
-  // OSS上传
   Future<String> uploadToOSS(File file, int userId) async {
+    final fileName = path.basename(file.path); // 使用 path 包获取正确文件名
     await uploadImage(file, userId);
-    return 'https://fapiao.s3.bitiful.net/images/$userId/${file.uri.pathSegments.last}';
+    return 'https://fapiao.s3.bitiful.net/images/$userId/$fileName'; // 修正路径拼接
   }
 
-  // 上传图片到缤纷云
   Future<void> uploadImage(File imageFile, int userId) async {
     try {
-      final fileName = '$userId/${imageFile.uri.pathSegments.last}'; // 上传时的文件路径
+      final fileName =
+          '${userId}_${DateTime.now().millisecondsSinceEpoch}${path.extension(imageFile.path)}'; // 添加时间戳防止重复
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(
           imageFile.path,
           filename: fileName,
         ),
       });
-      final url = 'http://127.0.0.1:8000/upload';
-      await _dio.post(url, data: formData);
-    } catch (e) {
-      if (kDebugMode) {
-        print("上传图片时发生错误: $e");
-      }
+      await _dio.post('http://127.0.0.1:8000/upload', data: formData);
+    } on DioException catch (e) {
+      // 明确捕获 Dio 异常
+      throw Exception('上传到服务器失败: ${e.response?.data ?? e.message}');
     }
   }
 
-  // 提交到后端使用Dio
-  Future<String?> submitInvoiceInfo(String imageUrl, int userId) async {
-    final dio = Dio();
+  Future<String> submitInvoiceInfo(String imageUrl, int userId) async {
     try {
-      final response = await dio.post(
+      final response = await _dio.post(
         'http://127.0.0.1:8000/admin_invoice/invoice_info',
-        options: Options(headers: {"Content-Type": "application/json"}),
-        data: {'image_url': imageUrl, 'user_id': userId.toString()},
+        data: {'image_url': imageUrl, 'user_id': userId},
       );
-      debugPrint(response.statusCode.toString());
-      debugPrint(response.data['message'].toString());
 
-      if (response.statusCode == 200) {
-        return response.data['message'];
+      if (response.statusCode != 200) {
+        // 处理非200状态码
+        throw Exception('服务器返回错误: ${response.data}');
       }
-    } catch (e) {
-      throw Exception('未知错误: $e');
+      return response.data['message'] as String;
+    } on DioException catch (e) {
+      throw Exception('网络请求失败: ${e.message}');
     }
-    return null;
   }
 }

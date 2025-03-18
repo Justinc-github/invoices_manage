@@ -88,32 +88,28 @@ class InvoiceUploadView extends StatelessWidget {
       builder:
           (context) => ContentDialog(
             title: const Text('上传结果'),
-            content: SizedBox(
-              width: 400,
-              child: SizedBox(
-                width: 400,
-                height: 300, // 固定高度防止内容溢出
-                child: Scrollbar(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children:
-                        messages
-                            .map(
-                              (msg) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4,
-                                ),
-                                child: Text(msg),
-                              ),
-                            )
-                            .toList(),
-                  ),
-                ),
+            content: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 300),
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder:
+                    (_, index) => Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        messages[index],
+                        style: TextStyle(
+                          color:
+                              messages[index].contains('✅')
+                                  ? Colors.green
+                                  : Colors.red,
+                        ),
+                      ),
+                    ),
               ),
             ),
             actions: [
-              Button(
-                child: const Text("确定"),
+              FilledButton(
+                child: const Text('关闭'),
                 onPressed: () => Navigator.pop(context),
               ),
             ],

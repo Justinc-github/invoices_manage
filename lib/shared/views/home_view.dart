@@ -1,5 +1,6 @@
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final home = context.watch<HomeViewModel>();
     final auth = context.watch<AuthViewModel>();
-
+    final inupload = context.watch<InvoiceUploadViewModel>();
     // 登录状态监听
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (home.isClosing) {
@@ -45,31 +46,43 @@ class HomeView extends StatelessWidget {
     return NavigationView(
       pane: NavigationPane(
         selected: home.selectedIndex,
-        onChanged: home.updateSelectedIndex,
+        onChanged: inupload.isUploading ? null : home.updateSelectedIndex,
         displayMode: PaneDisplayMode.compact,
         items: [
           PaneItem(
             icon: const Icon(FluentIcons.home),
             title: const Text('首页'),
-            mouseCursor: SystemMouseCursors.click,
+            mouseCursor:
+                inupload.isUploading
+                    ? SystemMouseCursors.forbidden
+                    : SystemMouseCursors.click,
             body: const HomeContentView(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.invoice),
             title: const Text('我的发票'),
-            mouseCursor: SystemMouseCursors.click,
+            mouseCursor:
+                inupload.isUploading
+                    ? SystemMouseCursors.forbidden
+                    : SystemMouseCursors.click,
             body: const InvoiceSelfView(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.people),
             title: const Text('所有成员'),
-            mouseCursor: SystemMouseCursors.click,
+            mouseCursor:
+                inupload.isUploading
+                    ? SystemMouseCursors.forbidden
+                    : SystemMouseCursors.click,
             body: const MembersAllView(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.upload),
             title: const Text('发票上传'),
-            mouseCursor: SystemMouseCursors.click,
+            mouseCursor:
+                inupload.isUploading
+                    ? SystemMouseCursors.forbidden
+                    : SystemMouseCursors.click,
             body: const InvoiceUploadView(),
           ),
         ],
@@ -78,7 +91,10 @@ class HomeView extends StatelessWidget {
           PaneItem(
             icon: const Icon(FluentIcons.help),
             title: const Text('帮助'),
-            mouseCursor: SystemMouseCursors.click,
+            mouseCursor:
+                inupload.isUploading
+                    ? SystemMouseCursors.forbidden
+                    : SystemMouseCursors.click,
             body: const HelpView(),
           ),
         ],
