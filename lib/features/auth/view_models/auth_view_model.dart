@@ -1,21 +1,44 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
+import 'package:management_invoices/features/auth/views/login_view.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:management_invoices/core/repositories/auth_repository.dart';
+
+import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 
 class AuthViewModel extends ChangeNotifier {
   final AuthRepository _repository; // 初始化认证仓库
   final AvatarViewModel _avatarViewModel; // 新增
+
   AuthViewModel(this._repository, this._avatarViewModel) {
     checkLoginStatus();
-  } // 登录弹窗是否显示
+  }
 
   final TextEditingController usernameController =
       TextEditingController(); // 用户名
   final TextEditingController passwordController =
       TextEditingController(); // 密码
+
+  // 注册相关控制器
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final TextEditingController codeController = TextEditingController();
+
+  int registerStep = 1; // 1-邮箱验证 2-设置账户
+  bool _isCodeSent = false;
+  String? _code;
+  int _countdown = 60;
+  Timer? _timer;
+
+  bool get isCodeSent => _isCodeSent;
+  int get countdown => _countdown;
+
+  bool _isLoginForm = true; // 当前是否显示登录表单
+  bool get isLoginForm => _isLoginForm;
 
   bool _isLoading = false; // 加载状态
   bool get isLoading => _isLoading;
@@ -29,11 +52,130 @@ class AuthViewModel extends ChangeNotifier {
   bool _isDialogShow = true;
   bool get isDialogShow => _isDialogShow;
 
+  bool _isUsernameValid = false;
+  bool get isUsernameValid => _isUsernameValid;
+  set isUsernameValid(bool value) {
+    _isUsernameValid = value;
+    notifyListeners();
+  }
+
+  bool _isPasswordValid = false;
+  bool get isPasswordValid => _isPasswordValid;
+  set isPasswordValid(bool value) {
+    _isPasswordValid = value;
+    notifyListeners();
+  }
+
+  bool _isConfirmPasswordValid = false;
+  bool get isConfirmPasswordValid => _isConfirmPasswordValid;
+  set isConfirmPasswordValid(bool value) {
+    _isConfirmPasswordValid = value;
+    notifyListeners();
+  }
+
+  bool _isLoginUsernameValid = false;
+  bool get isLoginUsernameValid => _isLoginUsernameValid;
+  set isLoginUsernameValid(bool value) {
+    _isLoginUsernameValid = value;
+    notifyListeners(); // 关键：触发界面更新
+  }
+
+  bool _isLoginPasswordValid = false;
+  bool get isLoginPasswordValid => _isLoginPasswordValid;
+  set isLoginPasswordValid(bool value) {
+    _isLoginPasswordValid = value;
+    notifyListeners(); // 关键：触发界面更新
+  }
+
+  // 清空登录字段和状态
+  void resetLoginFields() {
+    usernameController.clear();
+    passwordController.clear();
+    isLoginUsernameValid = false;
+    isLoginPasswordValid = false;
+    notifyListeners();
+  }
+
+  // 设置错误信息的公共方法
+  void setErrorMessage(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
+  // 清除错误信息的方法
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  // 发送验证码
+  Future<void> sendVerificationCode() async {
+    if (!RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    ).hasMatch(emailController.text)) {
+      _errorMessage = "请输入有效的邮箱地址";
+      notifyListeners();
+      return;
+    }
+    _isCodeSent = true;
+    notifyListeners();
+    try {
+      _code = await _repository.sendCode(emailController.text.toString());
+      _startCountdown();
+      _errorMessage = null;
+      notifyListeners();
+    } catch (e) {
+      debugPrint("发生错误$e");
+    }
+  }
+
+  // 验证验证码
+  Future<void> verifyCode(BuildContext context) async {
+    debugPrint(_code);
+    if (codeController.text != _code) {
+      _errorMessage = "验证码错误，请重新输入";
+      notifyListeners();
+      return;
+    }
+
+    registerStep = 2;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  // 倒计时逻辑
+  void _startCountdown() {
+    _countdown = 60;
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_countdown > 0) {
+        _countdown--;
+        notifyListeners();
+      } else {
+        _timer?.cancel();
+        _isCodeSent = false;
+        notifyListeners();
+      }
+    });
+  }
+
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     _isLoggedIn = prefs.getString('auth_token') != null;
     debugPrint('登录状态$isLoggedIn'.toString());
     notifyListeners();
+  }
+
+  Future<void> resetRegistration() async {
+    registerStep = 1; // 重置到第一步
+    _isCodeSent = false; // 重置验证码状态
+    _countdown = 60; // 重置倒计时
+    _timer?.cancel(); // 取消定时器
+    codeController.clear(); // 清空验证码输入
+    _errorMessage = null; // 清除错误信息
+    isUsernameValid = false;
+    isPasswordValid = false;
+    isConfirmPasswordValid = false;
+    notifyListeners(); // 通知界面更新
   }
 
   Future<void> login(context) async {
@@ -86,6 +228,46 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 切换表单
+  void toggleForm() {
+    _isLoginForm = !_isLoginForm;
+    clearCredentials();
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  // 注册方法
+  Future<void> register(context) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final (success, message) = await _repository.register(
+        usernameController.text,
+        emailController.text,
+        passwordController.text,
+        codeController.text,
+      );
+
+      if (success) {
+        _errorMessage = message;
+        // 注册成功或用户已存在后自动登录
+        Navigator.pop(context); // 关闭对话框
+        showDialog(context: context, builder: (context) => const LoginDialog());
+      } else if (message == '用户名或邮箱已存在，请登录') {
+        _errorMessage = message;
+        Navigator.pop(context); // 关闭对话框
+        showDialog(context: context, builder: (_) => const LoginDialog());
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // 清除所有保存的登录信息
   Future<void> clearAllPreferences() async {
     try {
@@ -109,5 +291,13 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> clearCredentials() async {
     usernameController.clear();
     passwordController.clear();
+    emailController.clear();
+    confirmPasswordController.clear();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }

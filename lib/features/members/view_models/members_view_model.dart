@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/core/models/auth_info_model.dart';
+
 import 'package:management_invoices/core/repositories/members_repository.dart';
+import 'package:management_invoices/core/models/auth_info_model.dart';
 
 class MembersViewModel extends ChangeNotifier {
   final MembersRepository _membersRepository;

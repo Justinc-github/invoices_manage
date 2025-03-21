@@ -1,16 +1,16 @@
-import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
-import 'package:management_invoices/features/auth/views/login_view.dart';
-import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
-import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
-import 'package:management_invoices/shared/views/dialog_view.dart';
-import 'package:management_invoices/shared/view_models/home_view_model.dart';
+import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 
+import 'package:management_invoices/shared/views/dialog_view.dart';
 import 'package:management_invoices/features/help/views/help_view.dart';
-import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
+import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/features/home/views/home_content_view.dart';
+import 'package:management_invoices/features/members/views/members_all_view.dart';
+import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
+import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/invoice/views/invoice_upload_view.dart';
 
 class HomeView extends StatelessWidget {

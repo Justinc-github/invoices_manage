@@ -1,9 +1,11 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
 import 'package:path/path.dart' as path;
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
 
 class InvoiceUploadViewModel extends ChangeNotifier {
   final InvoiceUploadRepository _invoiceUploadRepository;
@@ -23,18 +25,15 @@ class InvoiceUploadViewModel extends ChangeNotifier {
       if (_isUploading) return;
       _isUploading = true;
       notifyListeners();
-
       final files = await _invoiceUploadRepository.pickFiles();
       if (files == null || files.isEmpty) {
         _isUploading = false;
         notifyListeners();
         return;
       }
-
       final prefs = await SharedPreferences.getInstance();
       final userInfo = jsonDecode(prefs.getString('userInfo')!);
       final userId = userInfo['user_id'] as int; // 明确类型转换
-
       final tempMessages = <String>[];
       for (final file in files) {
         try {
@@ -46,7 +45,6 @@ class InvoiceUploadViewModel extends ChangeNotifier {
             imageUrl,
             userId,
           );
-
           tempMessages.add('✅ ${path.basename(file.path)} 上传成功: $result');
           successCount++;
         } catch (e) {

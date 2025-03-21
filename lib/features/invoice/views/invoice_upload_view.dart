@@ -1,7 +1,9 @@
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
-import 'package:management_invoices/shared/views/avatar_view.dart';
 import 'package:provider/provider.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
+import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
+
+import 'package:management_invoices/shared/views/avatar_view.dart';
 
 class InvoiceUploadView extends StatelessWidget {
   const InvoiceUploadView({super.key});

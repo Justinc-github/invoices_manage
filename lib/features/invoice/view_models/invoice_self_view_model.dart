@@ -4,8 +4,9 @@ import 'package:decimal/decimal.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:management_invoices/core/models/invoice_self_model.dart';
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_self_respositiory.dart';
+
+import 'package:management_invoices/core/models/invoice_self_model.dart';
 
 class InvoiceSelfViewModel with ChangeNotifier {
   final InvoiceSelfRespositiory _invoiceSelfRespositiory;

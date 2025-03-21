@@ -1,10 +1,13 @@
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+
 import 'package:management_invoices/core/models/auth_info_model.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';
+
 import 'package:management_invoices/shared/views/avatar_view.dart';
-import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:intl/intl.dart';
 
 class MembersAllView extends StatelessWidget {
   const MembersAllView({super.key});
