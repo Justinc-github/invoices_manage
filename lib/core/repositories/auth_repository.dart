@@ -10,6 +10,8 @@ class AuthRepository {
   static const String _login = '/admin_invoice/user/login';
   static const String _register = '/register';
   static const String _sendCode = '/register/code';
+  static const String _retrieveCode = '/retrieve/password/code';
+  static const String _retrievePassword = '/retrieve/password';
 
   Future<(bool success, String message)> login(
     String username,
@@ -99,5 +101,53 @@ class AuthRepository {
       debugPrint('未知错误: $e');
     }
     return null;
+  }
+
+  Future<String?> sendPasswordResetCode(String email) async {
+    try {
+      final response = await _dio.post(
+        '$_baseUrl$_retrieveCode',
+        data: jsonEncode({'email': email}),
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        final code = responseData['code'];
+        final String message = code.toString();
+        debugPrint(message);
+        return message;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<(bool success, String message)> resetPassword(
+    String email,
+    String code,
+    String newpassword,
+  ) async {
+    try {
+      final response = await _dio.post(
+        '$_baseUrl$_retrievePassword',
+        data: jsonEncode({
+          'email': email,
+          'code': code,
+          'newpassword': newpassword,
+        }),
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+      if (response.statusCode == 200) {
+        final responseData = response.data as Map<String, dynamic>;
+        final username = responseData['username'];
+        final String message = username.toString();
+        debugPrint(message);
+        return (true, message);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return (false, '找回失败，用户不存在');
   }
 }

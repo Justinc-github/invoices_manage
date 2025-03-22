@@ -12,7 +12,7 @@ class RegisterDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 300),
         child: Consumer<AuthViewModel>(
           builder: (context, auth, _) {
             return Column(
@@ -170,6 +170,7 @@ class _EmailInput extends StatelessWidget {
       keyboardType: TextInputType.emailAddress,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: _validateEmail,
+      onChanged: (value) => auth.isEmailValid = _validateEmail(value) == null,
     );
   }
 }
@@ -189,6 +190,9 @@ class _VerificationCodeRow extends StatelessWidget {
             decoration: _inputDecoration('验证码', Icons.sms),
             keyboardType: TextInputType.number,
             validator: _validateVerificationCode,
+            onChanged:
+                (value) =>
+                    auth.isCodeValid = _validateVerificationCode(value) == null,
           ),
         ),
         const SizedBox(width: 12),
@@ -242,7 +246,10 @@ class _NextStepButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          onPressed: () => auth.verifyCode(context),
+          onPressed:
+              auth.isEmailValid && auth.isCodeValid
+                  ? () => auth.verifyCode(context)
+                  : null,
           child: const Text(
             '下一步',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

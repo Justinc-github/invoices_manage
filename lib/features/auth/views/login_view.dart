@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:management_invoices/features/auth/views/register_view.dart';
+import 'package:management_invoices/features/auth/views/retrieve_view.dart';
 import 'package:provider/provider.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 
@@ -15,11 +16,20 @@ class LoginDialog extends StatelessWidget {
       auth.resetLoginFields();
     });
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      auth.resetLoginFields();
+      // 新增：自动填充找回的用户名
+      if (auth.retrieveUsername != null) {
+        auth.usernameController.text = auth.retrieveUsername!;
+        auth.isLoginUsernameValid = true; // 触发验证状态更新
+      }
+    });
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(maxWidth: 300),
         child: Consumer<AuthViewModel>(
           builder: (context, auth, _) {
             return Column(
@@ -115,17 +125,35 @@ class LoginDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('还没有账号？'),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                         showDialog(
                           context: context,
+                          barrierDismissible: false,
                           builder: (context) => const RegisterDialog(),
                         );
                       },
                       child: Text(
                         '立即注册',
+                        style: TextStyle(
+                          color: Colors.blue[700],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Text('|'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => const RetrieveDialog(),
+                        );
+                      },
+                      child: Text(
+                        '忘记密码',
                         style: TextStyle(
                           color: Colors.blue[700],
                           fontWeight: FontWeight.bold,

@@ -17,12 +17,12 @@ class AuthViewModel extends ChangeNotifier {
     checkLoginStatus();
   }
 
+  // 注册相关控制器
   final TextEditingController usernameController =
       TextEditingController(); // 用户名
   final TextEditingController passwordController =
       TextEditingController(); // 密码
 
-  // 注册相关控制器
   final TextEditingController emailController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -51,6 +51,9 @@ class AuthViewModel extends ChangeNotifier {
 
   bool _isDialogShow = true;
   bool get isDialogShow => _isDialogShow;
+
+  String? _retrieveUsername;
+  String? get retrieveUsername => _retrieveUsername;
 
   bool _isUsernameValid = false;
   bool get isUsernameValid => _isUsernameValid;
@@ -85,6 +88,133 @@ class AuthViewModel extends ChangeNotifier {
   set isLoginPasswordValid(bool value) {
     _isLoginPasswordValid = value;
     notifyListeners(); // 关键：触发界面更新
+  }
+
+  bool _isEmailValid = false;
+  bool get isEmailValid => _isEmailValid;
+  set isEmailValid(bool value) {
+    _isEmailValid = value;
+    notifyListeners();
+  }
+
+  bool _isCodeValid = false;
+  bool get isCodeValid => _isCodeValid;
+  set isCodeValid(bool value) {
+    _isCodeValid = value;
+    notifyListeners();
+  }
+
+  // 找回密码相关状态
+  int _retrieveStep = 1; // 1-邮箱验证 2-设置密码
+  int get retrieveStep => _retrieveStep;
+
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmNewPasswordController =
+      TextEditingController();
+
+  bool _isNewPasswordValid = false;
+  bool get isNewPasswordValid => _isNewPasswordValid;
+  set isNewPasswordValid(bool value) {
+    _isNewPasswordValid = value;
+    notifyListeners();
+  }
+
+  bool _isConfirmNewPasswordValid = false;
+  bool get isConfirmNewPasswordValid => _isConfirmNewPasswordValid;
+  set isConfirmNewPasswordValid(bool value) {
+    _isConfirmNewPasswordValid = value;
+    notifyListeners();
+  }
+
+  // 找回密码方法
+  Future<void> sendPasswordResetCode() async {
+    if (!RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    ).hasMatch(emailController.text)) {
+      _errorMessage = "请输入有效的邮箱地址";
+      notifyListeners();
+      return;
+    }
+
+    try {
+      _isCodeSent = true;
+      notifyListeners();
+      _code = await _repository.sendPasswordResetCode(emailController.text);
+      _startCountdown();
+      _errorMessage = null;
+    } catch (e) {
+      _errorMessage = e.toString();
+    }
+    notifyListeners();
+  }
+
+  Future<void> resetPassword(BuildContext context) async {
+    if (newPasswordController.text != confirmNewPasswordController.text) {
+      _errorMessage = "两次输入的密码不一致";
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final (success, message) = await _repository.resetPassword(
+        emailController.text,
+        codeController.text,
+        newPasswordController.text,
+      );
+      if (success) {
+        // 新增：将找回的用户名赋给控制器
+        _retrieveUsername = message;
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          barrierDismissible: false, // 阻止点击外部关闭
+          builder: (context) => const LoginDialog(),
+        );
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
+  void verifyCodeRetrieveCode(BuildContext context) {
+    debugPrint(_code);
+    if (codeController.text != _code) {
+      _errorMessage = "验证码错误，请重新输入";
+      notifyListeners();
+      return;
+    }
+
+    _retrieveStep = 2;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  void resetRetrieveProcess() {
+    _retrieveStep = 1;
+    emailController.clear();
+    codeController.clear();
+    newPasswordController.clear();
+    confirmNewPasswordController.clear();
+    _isCodeSent = false;
+    _countdown = 60;
+    _timer?.cancel();
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  // 更新倒计时逻辑
+  void _startCountdown() {
+    _countdown = 60;
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_countdown > 0) {
+        _countdown--;
+      } else {
+        _timer?.cancel();
+        _isCodeSent = false;
+      }
+      notifyListeners();
+    });
   }
 
   // 清空登录字段和状态
@@ -143,21 +273,6 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 倒计时逻辑
-  void _startCountdown() {
-    _countdown = 60;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_countdown > 0) {
-        _countdown--;
-        notifyListeners();
-      } else {
-        _timer?.cancel();
-        _isCodeSent = false;
-        notifyListeners();
-      }
-    });
-  }
-
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     _isLoggedIn = prefs.getString('auth_token') != null;
@@ -172,9 +287,11 @@ class AuthViewModel extends ChangeNotifier {
     _timer?.cancel(); // 取消定时器
     codeController.clear(); // 清空验证码输入
     _errorMessage = null; // 清除错误信息
-    isUsernameValid = false;
-    isPasswordValid = false;
-    isConfirmPasswordValid = false;
+    _isUsernameValid = false;
+    _isPasswordValid = false;
+    _isConfirmPasswordValid = false;
+    _isEmailValid = false;
+    _isCodeValid = false;
     notifyListeners(); // 通知界面更新
   }
 
