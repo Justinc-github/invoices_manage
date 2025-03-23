@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/features/members/views/members_self_team_view.dart';
+import 'package:management_invoices/shared/views/title_bar_view.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
-
 import 'package:management_invoices/shared/views/dialog_view.dart';
 import 'package:management_invoices/features/help/views/help_view.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
@@ -13,97 +16,249 @@ import 'package:management_invoices/features/invoice/views/invoice_self_view.dar
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/invoice/views/invoice_upload_view.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class HomeView extends StatefulWidget {
+  final VoidCallback onThemeToggle; // 添加主题切换回调参数
+
+  const HomeView({super.key, required this.onThemeToggle});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  late final SidebarXController _controller;
+  final _scaffoldKey = GlobalKey<material.ScaffoldState>();
+  bool isDarkMode = false; // 添加主题状态
+
+  @override
+  void initState() {
+    super.initState();
+    final initialIndex = context.read<HomeViewModel>().selectedIndex;
+    _controller = SidebarXController(
+      selectedIndex: initialIndex,
+      extended: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final home = context.watch<HomeViewModel>();
+    final selectedIndex = context.select<HomeViewModel, int>(
+      (homeVM) => homeVM.selectedIndex,
+    );
+    final isUploading = context.select<InvoiceUploadViewModel, bool>(
+      (uploadVM) => uploadVM.isUploading,
+    );
     final auth = context.watch<AuthViewModel>();
-    final inupload = context.watch<InvoiceUploadViewModel>();
-    // 登录状态监听
+    final home = context.watch<HomeViewModel>();
+
+    _syncControllerIndex(selectedIndex);
+
+    _handleAuthState(context, home, auth);
+
+    return material.Scaffold(
+      key: _scaffoldKey,
+      backgroundColor:
+          FluentTheme.of(context).scaffoldBackgroundColor, // 动态背景颜色
+      body: Column(
+        children: [
+          SizedBox(
+            height: 68, // 60高度 + 8*2 padding
+            child: TitleBarView(
+              onThemeToggle: widget.onThemeToggle, // 传递回调
+            ),
+          ),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Row(
+                  children: [
+                    _buildSidebar(context, isUploading),
+                    Expanded(
+                      child: _buildBodyContent(_controller.selectedIndex),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _syncControllerIndex(int selectedIndex) {
+    if (_controller.selectedIndex != selectedIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.selectIndex(selectedIndex);
+      });
+    }
+  }
+
+  void _handleAuthState(
+    BuildContext context,
+    HomeViewModel home,
+    AuthViewModel auth,
+  ) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (home.isClosing) {
         showCloseDialog(context, home);
       }
       if (auth.isDialogShow && !auth.isLoggedIn) {
-        debugPrint('1');
         auth.dialogClose();
         showDialog(
           context: context,
-          barrierColor: Color.fromARGB(
-            (0.8 * 255).round(),
-            0, // R
-            0, // G
-            0, // B
-          ),
+          barrierColor: Color.fromARGB((0.8 * 255).round(), 0, 0, 0),
           barrierDismissible: false,
           builder: (context) => const LoginDialog(),
         );
       }
     });
+  }
 
-    return NavigationView(
-      pane: NavigationPane(
-        selected: home.selectedIndex,
-        onChanged: inupload.isUploading ? null : home.updateSelectedIndex,
-        displayMode: PaneDisplayMode.compact,
-        items: [
-          PaneItem(
-            icon: const Icon(FluentIcons.home),
-            title: const Text('首页'),
-            mouseCursor:
-                inupload.isUploading
-                    ? SystemMouseCursors.forbidden
-                    : SystemMouseCursors.click,
-            body: const HomeContentView(),
+  Widget _buildSidebar(BuildContext context, bool isUploading) {
+    return Selector<HomeViewModel, int>(
+      selector: (_, vm) => vm.selectedIndex,
+      builder: (_, selectedIndex, __) {
+        return Container(
+          decoration: BoxDecoration(
+            color: FluentTheme.of(context).scaffoldBackgroundColor, // 背景颜色
+            borderRadius: BorderRadius.circular(20), // 设置圆角
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(25), // 阴影颜色
+                blurRadius: 10, // 模糊半径
+                offset: Offset(0, 5), // 阴影偏移
+              ),
+            ],
           ),
-          PaneItem(
-            icon: const Icon(FluentIcons.invoice),
-            title: const Text('我的发票'),
-            mouseCursor:
-                inupload.isUploading
-                    ? SystemMouseCursors.forbidden
-                    : SystemMouseCursors.click,
-            body: const InvoiceSelfView(),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20), // 确保内容也有圆角
+            child: SidebarX(
+              controller: _controller,
+              theme: _sidebarTheme(),
+              extendedTheme: const SidebarXTheme(width: 200),
+              items: _sidebarItems(context, isUploading),
+            ),
           ),
-          PaneItem(
-            icon: const Icon(FluentIcons.people),
-            title: const Text('所有成员'),
-            mouseCursor:
-                inupload.isUploading
-                    ? SystemMouseCursors.forbidden
-                    : SystemMouseCursors.click,
-            body: const MembersAllView(),
-          ),
-          PaneItem(
-            icon: const Icon(FluentIcons.upload),
-            title: const Text('发票上传'),
-            mouseCursor:
-                inupload.isUploading
-                    ? SystemMouseCursors.forbidden
-                    : SystemMouseCursors.click,
-            body: const InvoiceUploadView(),
-          ),
-        ],
-        footerItems: [
-          PaneItemSeparator(),
-          PaneItem(
-            icon: const Icon(FluentIcons.help),
-            title: const Text('帮助'),
-            mouseCursor:
-                inupload.isUploading
-                    ? SystemMouseCursors.forbidden
-                    : SystemMouseCursors.click,
-            body: const HelpView(),
-          ),
-        ],
-        size: const NavigationPaneSize(
-          openMinWidth: 150,
-          openMaxWidth: 250,
-          openWidth: 200,
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  SidebarXTheme _sidebarTheme() {
+    final theme = FluentTheme.of(context); // 获取当前主题
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    return SidebarXTheme(
+      margin: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        color:
+            isDarkMode
+                ? Color.alphaBlend(
+                  Colors.white.withAlpha(25),
+                  theme.scaffoldBackgroundColor,
+                )
+                : Color.alphaBlend(
+                  Colors.black.withAlpha(10),
+                  theme.scaffoldBackgroundColor,
+                ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      hoverColor: theme.accentColor.withAlpha(25),
+      textStyle: TextStyle(color: theme.inactiveColor),
+      selectedTextStyle: TextStyle(color: theme.accentColor),
+      itemTextPadding: const EdgeInsets.only(left: 30),
+      selectedItemTextPadding: const EdgeInsets.only(left: 30),
+      itemDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.transparent),
+      ),
+      selectedItemDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        gradient: LinearGradient(
+          colors: [
+            theme.accentColor.light.withAlpha(76),
+            theme.accentColor.dark.withAlpha(76),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(color: theme.shadowColor.withAlpha(25), blurRadius: 5),
+        ],
+      ),
+      iconTheme: IconThemeData(color: theme.inactiveColor, size: 20),
+    );
+  }
+
+  List<SidebarXItem> _sidebarItems(BuildContext context, bool isUploading) {
+    return [
+      SidebarXItem(
+        icon: material.Icons.home,
+        label: '首页',
+        onTap: () => _updateIndex(context, 0, false),
+      ),
+      SidebarXItem(
+        icon: material.Icons.receipt,
+        label: '我的发票',
+        onTap: () => _updateIndex(context, 1, false),
+      ),
+      SidebarXItem(
+        icon: material.Icons.people,
+        label: '所有成员',
+        onTap: () => _updateIndex(context, 2, isUploading),
+      ),
+      SidebarXItem(
+        icon: material.Icons.upload,
+        label: '发票上传',
+        onTap: () => _updateIndex(context, 3, isUploading),
+      ),
+      SidebarXItem(
+        icon: material.Icons.help,
+        label: '帮助',
+        onTap: () => _updateIndex(context, 4, false),
+      ),
+    ];
+  }
+
+  void _updateIndex(BuildContext context, int index, bool isUploading) {
+    if (isUploading) {
+      material.ScaffoldMessenger.of(context).showSnackBar(
+        const material.SnackBar(
+          content: Text('当前正在上传发票，请稍后操作'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    final homeVM = context.read<HomeViewModel>();
+    if (index != homeVM.selectedIndex) {
+      homeVM.updateSelectedIndex(index);
+      _controller.selectIndex(index);
+    }
+  }
+
+  Widget _buildBodyContent(int index) {
+    switch (index) {
+      case 0:
+        return const HomeContentView();
+      case 1:
+        return const InvoiceSelfView();
+      case 2:
+        return const MembersAllView();
+      case 3:
+        return const InvoiceUploadView();
+      case 4:
+        return const HelpView();
+      case 5:
+        return const MembersSelfTeamView();
+      default:
+        return const Center(child: Text('页面未找到'));
+    }
   }
 }

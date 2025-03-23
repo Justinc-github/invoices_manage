@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
 
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -13,9 +14,10 @@ class AvatarView extends StatelessWidget {
   Widget build(BuildContext context) {
     final avatarViewModel = context.watch<AvatarViewModel>();
     final auth = context.watch<AuthViewModel>();
+    final home = context.watch<HomeViewModel>();
     return Positioned(
-      right: 20,
-      top: 20,
+      right: 190,
+      top: 6,
       child: Row(
         children: [
           if (avatarViewModel.error != null)
@@ -30,7 +32,7 @@ class AvatarView extends StatelessWidget {
             child: GestureDetector(
               onTap: () => avatarViewModel.uploadAvatar(),
               child: CircleAvatar(
-                radius: 25,
+                radius: 20,
                 backgroundImage:
                     avatarViewModel.avatarUser != null &&
                             avatarViewModel.avatarUser!.isNotEmpty
@@ -47,6 +49,18 @@ class AvatarView extends StatelessWidget {
 
             itemBuilder:
                 (BuildContext context) => <material.PopupMenuEntry<String>>[
+                  // 修改 AvatarView 中的 PopupMenuItem
+                  material.PopupMenuItem<String>(
+                    value: 'team_self',
+                    child: const _MenuListTile(
+                      icon: material.Icons.telegram,
+                      color: material.Colors.yellowAccent,
+                      title: '我的队伍',
+                    ),
+                    onTap: () {
+                      home.updateSelectedIndex(5);
+                    },
+                  ),
                   material.PopupMenuItem<String>(
                     value: 'Logout',
                     child: const _MenuListTile(

@@ -7,8 +7,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:management_invoices/core/models/auth_info_model.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 
-import 'package:management_invoices/shared/views/avatar_view.dart';
-
 class MembersAllView extends StatelessWidget {
   const MembersAllView({super.key});
   @override
@@ -27,7 +25,7 @@ class MembersAllView extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(
-            top: 100.0,
+            top: 10.0,
             left: 20.0,
             right: 20.0,
             bottom: 80.0,
@@ -64,7 +62,6 @@ class MembersAllView extends StatelessWidget {
             },
           ),
         ),
-        const AvatarView(),
         Positioned(
           bottom: 0,
           left: 0,

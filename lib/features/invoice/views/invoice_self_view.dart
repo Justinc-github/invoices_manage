@@ -7,8 +7,6 @@ import 'package:management_invoices/core/models/invoice_self_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 
-import 'package:management_invoices/shared/views/avatar_view.dart';
-
 class InvoiceSelfView extends StatelessWidget {
   const InvoiceSelfView({super.key});
 
@@ -31,91 +29,116 @@ class InvoiceSelfView extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 100.0,
-              left: 20.0,
-              right: 20.0,
-              bottom: 80.0,
-            ),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final invoiceDataSource = InvoiceDataSource(
-                  invoices: invoiceSelfViewModel.paginatedData,
-                );
+      child: Container(
+        color: FluentTheme.of(context).scaffoldBackgroundColor, // 动态背景颜色
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 10.0,
+                left: 20.0,
+                right: 20.0,
+                bottom: 80.0,
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final invoiceDataSource = InvoiceDataSource(
+                    invoices: invoiceSelfViewModel.paginatedData,
+                    context: context, // 传递 BuildContext
+                  );
 
-                return SfDataGrid(
-                  columnWidthMode: ColumnWidthMode.fill,
-                  gridLinesVisibility: GridLinesVisibility.both,
-                  headerGridLinesVisibility: GridLinesVisibility.both,
-                  rowHeight: 52,
-                  source: invoiceDataSource,
-                  columns: [
-                    GridColumn(
-                      columnName: 'invoiceNum',
-                      label: _buildHeader('发票ID'),
-                    ),
-                    GridColumn(
-                      columnName: 'invoiceType',
-                      label: _buildHeader('发票类型'),
-                    ),
-                    GridColumn(
-                      columnName: 'invoiceDate',
-                      label: _buildHeader('开票日期'),
-                    ),
-                    GridColumn(
-                      columnName: 'purchaserName',
-                      label: _buildHeader('购买物品'),
-                    ),
-                    GridColumn(
-                      columnName: 'sellerName',
-                      label: _buildHeader('销售者'),
-                    ),
-                    GridColumn(
-                      columnName: 'amountInFigures',
-                      label: _buildHeader('金额'),
-                    ),
-                  ],
-                );
-              },
+                  return SfDataGrid(
+                    columnWidthMode: ColumnWidthMode.fill,
+                    gridLinesVisibility: GridLinesVisibility.both,
+                    headerGridLinesVisibility: GridLinesVisibility.both,
+                    rowHeight: 52,
+                    source: invoiceDataSource,
+                    columns: [
+                      GridColumn(
+                        columnName: 'invoiceNum',
+                        label: _buildHeader(context, '发票ID'),
+                      ),
+                      GridColumn(
+                        columnName: 'invoiceType',
+                        label: _buildHeader(context, '发票类型'),
+                      ),
+                      GridColumn(
+                        columnName: 'invoiceDate',
+                        label: _buildHeader(context, '开票日期'),
+                      ),
+                      GridColumn(
+                        columnName: 'purchaserName',
+                        label: _buildHeader(context, '购买物品'),
+                      ),
+                      GridColumn(
+                        columnName: 'sellerName',
+                        label: _buildHeader(context, '销售者'),
+                      ),
+                      GridColumn(
+                        columnName: 'amountInFigures',
+                        label: _buildHeader(context, '金额'),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-          const AvatarView(),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildPaginationControls(context),
-          ),
-          Positioned(
-            right: 15,
-            bottom: 15,
-            child: Text(
-              '总金额: ¥${invoiceSelfViewModel.totalAmount.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: _buildPaginationControls(context),
             ),
-          ),
-        ],
+            Positioned(
+              right: 15,
+              bottom: 10,
+              child: Text(
+                '总金额: ¥${invoiceSelfViewModel.totalAmount.toStringAsFixed(2)}',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color:
+                      FluentTheme.of(context).brightness == Brightness.dark
+                          ? Colors
+                              .white // 深色模式下文字为白色
+                          : Colors.black, // 浅色模式下文字为黑色
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildHeader(String text) {
+  Widget _buildHeader(BuildContext context, String text) {
+    final theme = FluentTheme.of(context); // 使用传递的 BuildContext 获取主题
+
     return Center(
       child: Text(
         text,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'MSYH'),
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontFamily: 'MSYH',
+          color:
+              theme.brightness == Brightness.dark
+                  ? Colors
+                      .white // 深色模式下表头文字为白色
+                  : Colors.black, // 浅色模式下表头文字为黑色
+        ),
       ),
     );
   }
 
   Widget _buildPaginationControls(BuildContext context) {
+    final theme = FluentTheme.of(context); // 获取当前主题
     final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
 
     return Container(
-      color: Colors.grey[60],
+      color:
+          theme.brightness == Brightness.dark
+              ? Colors.grey[220] // 深色模式下背景为深灰色
+              : Colors.grey[100], // 浅色模式下背景为浅灰色
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Center(
         child: SingleChildScrollView(
@@ -126,7 +149,14 @@ class InvoiceSelfView extends StatelessWidget {
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: IconButton(
-                  icon: const Icon(FluentIcons.chevron_left),
+                  icon: Icon(
+                    FluentIcons.chevron_left,
+                    color:
+                        theme.brightness == Brightness.dark
+                            ? Colors
+                                .white // 深色模式下图标为白色
+                            : Colors.black, // 浅色模式下图标为黑色
+                  ),
                   onPressed:
                       invoiceSelfViewModel.currentPage > 1
                           ? () => invoiceSelfViewModel.setCurrentPage(
@@ -135,19 +165,32 @@ class InvoiceSelfView extends StatelessWidget {
                           : null,
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Container(
                 constraints: const BoxConstraints(maxWidth: 200),
                 child: Text(
                   '第 ${invoiceSelfViewModel.currentPage} 页 / 共 ${invoiceSelfViewModel.totalPages} 页',
                   overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color:
+                        theme.brightness == Brightness.dark
+                            ? Colors
+                                .white // 深色模式下文字为白色
+                            : Colors.black, // 浅色模式下文字为黑色
+                  ),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: IconButton(
-                  icon: const Icon(FluentIcons.chevron_right),
+                  icon: Icon(
+                    FluentIcons.chevron_right,
+                    color:
+                        theme.brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                  ),
                   onPressed:
                       invoiceSelfViewModel.currentPage <
                               invoiceSelfViewModel.totalPages
@@ -155,44 +198,6 @@ class InvoiceSelfView extends StatelessWidget {
                             invoiceSelfViewModel.currentPage + 1,
                           )
                           : null,
-                ),
-              ),
-              const SizedBox(width: 20),
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 120),
-                  child: ComboBox<int>(
-                    value: invoiceSelfViewModel.itemsPerPage,
-                    items: [
-                      ComboBoxItem(
-                        value: 10,
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Text('10 条/页'),
-                        ),
-                      ),
-                      ComboBoxItem(
-                        value: 20,
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Text('20 条/页'),
-                        ),
-                      ),
-                      ComboBoxItem(
-                        value: 50,
-                        child: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: Text('50 条/页'),
-                        ),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        invoiceSelfViewModel.setItemsPerPage(value);
-                      }
-                    },
-                  ),
                 ),
               ),
             ],
@@ -204,7 +209,10 @@ class InvoiceSelfView extends StatelessWidget {
 }
 
 class InvoiceDataSource extends DataGridSource {
-  InvoiceDataSource({required List<InvoiceModel> invoices}) {
+  InvoiceDataSource({
+    required List<InvoiceModel> invoices,
+    required this.context, // 接收 BuildContext
+  }) {
     _invoices =
         invoices
             .map<DataGridRow>(
@@ -240,6 +248,7 @@ class InvoiceDataSource extends DataGridSource {
             .toList();
   }
 
+  final BuildContext context; // 保存 BuildContext
   List<DataGridRow> _invoices = [];
 
   @override
@@ -247,6 +256,8 @@ class InvoiceDataSource extends DataGridSource {
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
+    final theme = FluentTheme.of(context); // 使用传递的 BuildContext 获取主题
+
     return DataGridRowAdapter(
       cells:
           row.getCells().map<Widget>((dataGridCell) {
@@ -257,6 +268,13 @@ class InvoiceDataSource extends DataGridSource {
                 dataGridCell.value.toString(),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
+                style: TextStyle(
+                  color:
+                      theme.brightness == Brightness.dark
+                          ? Colors
+                              .white // 深色模式下文字为白色
+                          : Colors.black, // 浅色模式下文字为黑色
+                ),
               ),
             );
           }).toList(),
