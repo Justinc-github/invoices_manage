@@ -1,7 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:management_invoices/core/models/team_info_model.dart';
 
 import 'package:management_invoices/core/repositories/members_repository.dart';
 import 'package:management_invoices/core/models/auth_info_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MembersViewModel extends ChangeNotifier {
   final MembersRepository _membersRepository;
@@ -21,6 +23,8 @@ class MembersViewModel extends ChangeNotifier {
   int get totalItems => _totalItems;
   int get totalPages => (_totalItems / _itemsPerPage).ceil();
 
+  TeamInfoModel? _teamInfo;
+  TeamInfoModel? get teamInfo => _teamInfo;
   // 分页数据
   List<AuthInfoModel> get paginatedData {
     final start = (_currentPage - 1) * _itemsPerPage;
@@ -46,6 +50,21 @@ class MembersViewModel extends ChangeNotifier {
       debugPrint('Error fetching invoices: $e');
       _membersInfos = [];
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> teamSelfMumbersGet() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('user_id').toString();
+      final response = await _membersRepository.teamSelfMumbers(userId);
+      if (response != null) {
+        _teamInfo = TeamInfoModel.fromJson(response);
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error fetching team info: $e');
       notifyListeners();
     }
   }

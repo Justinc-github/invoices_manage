@@ -33,6 +33,7 @@ class AuthRepository {
         prefs.setString('auth_token', jsonEncode(responseData['token']));
         prefs.setString('user_id', jsonEncode(responseData['user_id']));
         prefs.setString('username', jsonEncode(responseData['username']));
+        prefs.setString('team_id', jsonEncode(responseData['team_id']));
         prefs.setString('avatar', responseData['avatar']);
         prefs.setString('message', jsonEncode(responseData['message']));
         // 调试输出

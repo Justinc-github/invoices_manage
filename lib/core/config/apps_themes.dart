@@ -104,9 +104,10 @@ Future<void> windowsinItialization() async {
     backgroundColor: Colors.transparent, // 确保背景透明
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden, // 隐藏标题栏
-    size: Size(1280, 720),
+    // minimumSize: Size(1280, 720),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    // await windowManager.setResizable(true);
     await windowManager.setAsFrameless(); // 设置无边框
     await windowManager.setBounds(Rect.fromLTWH(100, 100, 1280, 720));
     await windowManager.show();

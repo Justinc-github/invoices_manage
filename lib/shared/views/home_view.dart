@@ -6,6 +6,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
+
 import 'package:management_invoices/shared/views/dialog_view.dart';
 import 'package:management_invoices/features/help/views/help_view.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
@@ -68,7 +69,7 @@ class _HomeViewState extends State<HomeView> {
       body: Column(
         children: [
           SizedBox(
-            height: 68, // 60高度 + 8*2 padding
+            height: 68,
             child: TitleBarView(
               onThemeToggle: widget.onThemeToggle, // 传递回调
             ),
@@ -94,9 +95,7 @@ class _HomeViewState extends State<HomeView> {
 
   void _syncControllerIndex(int selectedIndex) {
     if (_controller.selectedIndex != selectedIndex) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _controller.selectIndex(selectedIndex);
-      });
+      _controller.selectIndex(selectedIndex);
     }
   }
 
@@ -172,6 +171,10 @@ class _HomeViewState extends State<HomeView> {
       ),
       hoverColor: theme.accentColor.withAlpha(25),
       textStyle: TextStyle(color: theme.inactiveColor),
+      hoverTextStyle: TextStyle(
+        color: theme.accentColor, // 加深字体颜色
+        fontWeight: FontWeight.bold, // 字体加粗
+      ),
       selectedTextStyle: TextStyle(color: theme.accentColor),
       itemTextPadding: const EdgeInsets.only(left: 30),
       selectedItemTextPadding: const EdgeInsets.only(left: 30),
@@ -191,7 +194,10 @@ class _HomeViewState extends State<HomeView> {
           BoxShadow(color: theme.shadowColor.withAlpha(25), blurRadius: 5),
         ],
       ),
-      iconTheme: IconThemeData(color: theme.inactiveColor, size: 20),
+      iconTheme: IconThemeData(
+        color: theme.inactiveColor.withAlpha(255),
+        size: 20,
+      ),
     );
   }
 

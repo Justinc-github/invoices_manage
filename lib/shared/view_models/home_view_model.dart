@@ -13,10 +13,17 @@ class HomeViewModel with ChangeNotifier, WindowListener {
   // 状态暴露
   int get selectedIndex => _selectedIndex;
   bool get isClosing => _isClosing;
+  bool _maximized = false;
+  bool get maximized => _maximized;
 
   // 更新索引导航
   void updateSelectedIndex(int index) {
     _selectedIndex = index;
+    notifyListeners();
+  }
+
+  Future<void> toggleMaximized() async {
+    _maximized = await windowManager.isMaximized();
     notifyListeners();
   }
 

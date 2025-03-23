@@ -1,5 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:management_invoices/shared/utils/mouse_cursor.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/shared/views/avatar_view.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 class TitleBarView extends StatelessWidget {
@@ -28,11 +31,13 @@ class TitleBarView extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(width: 10),
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundImage:
-                            AssetImage('assets/images/icon.jpg')
-                                as ImageProvider,
+                      MouseCursorClick(
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundImage:
+                              AssetImage('assets/images/icon.jpg')
+                                  as ImageProvider,
+                        ),
                       ),
                       Container(
                         padding: const EdgeInsets.only(left: 16),
@@ -50,7 +55,7 @@ class TitleBarView extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   // 窗口控制按钮
-                  _buildWindowControls(),
+                  _buildWindowControls(context),
                 ],
               ),
             ],
@@ -60,35 +65,52 @@ class TitleBarView extends StatelessWidget {
     );
   }
 
-  Widget _buildWindowControls() {
+  Widget _buildWindowControls(context) {
+    final homeViewModel = Provider.of<HomeViewModel>(context);
     return MouseRegion(
       cursor: SystemMouseCursors.basic,
       child: Row(
         children: [
           // 主题切换按钮
-          _WindowControlButton(
-            icon: FluentIcons.brightness, // 使用亮度图标
-            onPressed: onThemeToggle, // 调用主题切换回调
+          MouseCursorClick(
+            child: _WindowControlButton(
+              icon: FluentIcons.brightness, // 使用亮度图标
+              onPressed: onThemeToggle, // 调用主题切换回调
+            ),
           ),
-          _WindowControlButton(
-            icon: FluentIcons.chrome_minimize,
-            onPressed: windowManager.minimize,
+          const SizedBox(width: 8),
+          MouseCursorClick(
+            child: _WindowControlButton(
+              icon: FluentIcons.chrome_minimize,
+              onPressed: windowManager.minimize,
+            ),
           ),
-          _WindowControlButton(
-            icon: FluentIcons.chrome_full_screen,
-            onPressed: () async {
-              final isMaximized = await windowManager.isMaximized();
-              if (isMaximized) {
-                await windowManager.unmaximize();
-              } else {
-                await windowManager.maximize();
-              }
-            },
+          const SizedBox(width: 8),
+          MouseCursorClick(
+            child: _WindowControlButton(
+              icon:
+                  homeViewModel.maximized
+                      ? FluentIcons.chrome_restore
+                      : FluentIcons.chrome_full_screen,
+              onPressed: () async {
+                final isMaximized = await windowManager.isMaximized();
+                if (isMaximized) {
+                  await windowManager.unmaximize();
+                  homeViewModel.toggleMaximized();
+                } else {
+                  await windowManager.maximize();
+                  homeViewModel.toggleMaximized();
+                }
+              },
+            ),
           ),
-          _WindowControlButton(
-            icon: FluentIcons.chrome_close,
-            onPressed: windowManager.close,
-            hoverColor: Colors.red,
+          const SizedBox(width: 8),
+          MouseCursorClick(
+            child: _WindowControlButton(
+              icon: FluentIcons.chrome_close,
+              onPressed: windowManager.close,
+              hoverColor: Colors.red,
+            ),
           ),
           const SizedBox(width: 8),
         ],
@@ -111,8 +133,8 @@ class _WindowControlButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 46,
-      height: 50,
+      width: 35,
+      height: 30,
       child: HoverButton(
         onPressed: onPressed,
         builder: (context, states) {
