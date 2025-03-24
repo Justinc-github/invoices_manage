@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_manager/window_manager.dart';
 
 /// 主题配置
-/// 主题配置
 class AppThemes {
   static final FluentThemeData lightTheme = _buildTheme(
     brightness: Brightness.light,
@@ -42,7 +41,7 @@ class AppThemes {
   }) {
     return FluentThemeData(
       brightness: brightness,
-      fontFamily: 'MSYH',
+      fontFamily: 'MSYH', // 统一字体
       accentColor: accentColor,
       scaffoldBackgroundColor: scaffoldBackgroundColor,
       buttonTheme: ButtonThemeData(
@@ -60,7 +59,9 @@ class AppThemes {
   }
 }
 
+/// 样式配置
 class AppStyles {
+  /// 主按钮样式
   static ButtonStyle primaryButtonStyle(BuildContext context) {
     return ButtonStyle(
       backgroundColor: WidgetStateProperty.all(
@@ -70,9 +71,13 @@ class AppStyles {
       padding: WidgetStateProperty.all(
         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 
+  /// 卡片样式
   static BoxDecoration cardDecoration(BuildContext context) {
     return BoxDecoration(
       color: FluentTheme.of(context).scaffoldBackgroundColor,
@@ -87,15 +92,29 @@ class AppStyles {
     );
   }
 
+  /// 标题文本样式
   static TextStyle titleTextStyle(BuildContext context) {
-    return FluentTheme.of(context).typography.title!;
+    return FluentTheme.of(
+      context,
+    ).typography.title!.copyWith(fontWeight: FontWeight.bold, fontSize: 20);
   }
 
+  /// 正文文本样式
   static TextStyle bodyTextStyle(BuildContext context) {
-    return FluentTheme.of(context).typography.body!;
+    return FluentTheme.of(context).typography.body!.copyWith(
+      fontSize: 14,
+      color: FluentTheme.of(context).typography.body?.color?.withAlpha(180),
+    );
   }
+
+  /// 间距配置
+  static const EdgeInsets pagePadding = EdgeInsets.all(16);
+  static const EdgeInsets cardPadding = EdgeInsets.all(12);
+  static const SizedBox verticalSpacing = SizedBox(height: 16);
+  static const SizedBox horizontalSpacing = SizedBox(width: 16);
 }
 
+/// 窗口初始化
 Future<void> windowsinItialization() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
@@ -104,10 +123,8 @@ Future<void> windowsinItialization() async {
     backgroundColor: Colors.transparent, // 确保背景透明
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden, // 隐藏标题栏
-    // minimumSize: Size(1280, 720),
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
-    // await windowManager.setResizable(true);
     await windowManager.setAsFrameless(); // 设置无边框
     await windowManager.setBounds(Rect.fromLTWH(100, 100, 1280, 720));
     await windowManager.show();

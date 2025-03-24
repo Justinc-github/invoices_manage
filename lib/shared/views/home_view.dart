@@ -12,7 +12,6 @@ import 'package:management_invoices/features/help/views/help_view.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/features/home/views/home_content_view.dart';
-import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/invoice/views/invoice_upload_view.dart';
@@ -214,11 +213,6 @@ class _HomeViewState extends State<HomeView> {
         onTap: () => _updateIndex(context, 1, false),
       ),
       SidebarXItem(
-        icon: material.Icons.people,
-        label: '所有成员',
-        onTap: () => _updateIndex(context, 2, isUploading),
-      ),
-      SidebarXItem(
         icon: material.Icons.upload,
         label: '发票上传',
         onTap: () => _updateIndex(context, 3, isUploading),
@@ -256,12 +250,10 @@ class _HomeViewState extends State<HomeView> {
       case 1:
         return const InvoiceSelfView();
       case 2:
-        return const MembersAllView();
-      case 3:
         return const InvoiceUploadView();
-      case 4:
+      case 3:
         return const HelpView();
-      case 5:
+      case 4:
         return const MembersSelfTeamView();
       default:
         return const Center(child: Text('页面未找到'));

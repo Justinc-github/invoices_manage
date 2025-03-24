@@ -28,6 +28,7 @@ class AuthRepository {
 
       if (response.statusCode == 200) {
         final responseData = response.data as Map<String, dynamic>;
+        debugPrint(responseData.toString());
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('userInfo', jsonEncode(responseData));
         prefs.setString('auth_token', jsonEncode(responseData['token']));
@@ -38,6 +39,7 @@ class AuthRepository {
         prefs.setString('message', jsonEncode(responseData['message']));
         // 调试输出
         debugPrint('Stored UserID: ${prefs.getString('user_id')}');
+        debugPrint('所属队伍编号: ${prefs.getString('team_id')}');
         return (true, message);
       }
       return (false, message);

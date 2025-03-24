@@ -166,31 +166,18 @@ class InvoiceSelfView extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
+
               Container(
                 constraints: const BoxConstraints(maxWidth: 200),
                 child: Text(
                   '第 ${invoiceSelfViewModel.currentPage} 页 / 共 ${invoiceSelfViewModel.totalPages} 页',
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color:
-                        theme.brightness == Brightness.dark
-                            ? Colors
-                                .white // 深色模式下文字为白色
-                            : Colors.black, // 浅色模式下文字为黑色
-                  ),
                 ),
               ),
-              const SizedBox(width: 10),
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: IconButton(
-                  icon: Icon(
-                    FluentIcons.chevron_right,
-                    color:
-                        theme.brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                  ),
+                  icon: const Icon(FluentIcons.chevron_right),
                   onPressed:
                       invoiceSelfViewModel.currentPage <
                               invoiceSelfViewModel.totalPages
@@ -198,6 +185,44 @@ class InvoiceSelfView extends StatelessWidget {
                             invoiceSelfViewModel.currentPage + 1,
                           )
                           : null,
+                ),
+              ),
+              const SizedBox(width: 20),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 120),
+                  child: ComboBox<int>(
+                    value: invoiceSelfViewModel.itemsPerPage,
+                    items: [
+                      ComboBoxItem(
+                        value: 10,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('10 条/页'),
+                        ),
+                      ),
+                      ComboBoxItem(
+                        value: 20,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('20 条/页'),
+                        ),
+                      ),
+                      ComboBoxItem(
+                        value: 50,
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: Text('50 条/页'),
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        invoiceSelfViewModel.setItemsPerPage(value);
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

@@ -24,13 +24,13 @@ class AuthInfoModel extends Equatable {
   factory AuthInfoModel.fromJson(Map<String, dynamic> json) {
     return AuthInfoModel(
       id: json['id'],
-      username: json['username'],
-      email: json['email'],
-      status: json['status'],
-      createdAt: json['created_at'],
-      teamId: json['team_id'],
-      teamName: json['team_name'],
-      role: json['role'],
+      username: json['username'] ?? '未知用户名',
+      email: json['email'] ?? '未知邮箱',
+      status: json['status'] ?? 0,
+      createdAt: json['created_at'] ?? '',
+      teamId: json['team_id'] ?? 0,
+      teamName: json['team_name'] ?? '未知队伍',
+      role: json['role'], // role 可以为 null
     );
   }
 

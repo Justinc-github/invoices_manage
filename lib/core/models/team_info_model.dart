@@ -40,9 +40,9 @@ class TeamMember {
   factory TeamMember.fromJson(Map<String, dynamic> json) {
     return TeamMember(
       userId: json['user_id'],
-      userName: json['username'],
-      avatar: json['avatar'],
-      role: json['role'],
+      role: json['role'] ?? '未知角色',
+      userName: json['username'] ?? '未知用户名',
+      avatar: json['avatar'] ?? '',
     );
   }
 }

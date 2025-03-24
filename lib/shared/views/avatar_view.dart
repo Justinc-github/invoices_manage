@@ -15,6 +15,7 @@ class AvatarView extends StatelessWidget {
     final avatarViewModel = context.watch<AvatarViewModel>();
     final auth = context.watch<AuthViewModel>();
     final home = context.watch<HomeViewModel>();
+    final theme = FluentTheme.of(context);
     return Positioned(
       right: 190,
       top: 6,
@@ -46,7 +47,12 @@ class AvatarView extends StatelessWidget {
           // 下拉菜单按钮
           material.PopupMenuButton<String>(
             icon: const Icon(material.Icons.expand_more, size: 28),
+            color:
+                theme.brightness == Brightness.dark
+                    ? Colors.green['dark']
+                    : Colors.white.withAlpha(150),
 
+            offset: const Offset(0, 50), // 向下偏移 30 像素，根据需要调整
             itemBuilder:
                 (BuildContext context) => <material.PopupMenuEntry<String>>[
                   // 修改 AvatarView 中的 PopupMenuItem
@@ -58,7 +64,7 @@ class AvatarView extends StatelessWidget {
                       title: '我的队伍',
                     ),
                     onTap: () {
-                      home.updateSelectedIndex(5);
+                      home.updateSelectedIndex(4);
                     },
                   ),
                   material.PopupMenuItem<String>(
