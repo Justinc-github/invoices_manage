@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:management_invoices/shared/utils/mouse_cursor.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 class MembersSelfTeamView extends StatelessWidget {
@@ -174,6 +175,21 @@ class MembersSelfTeamView extends StatelessWidget {
                     ),
                     title: Text('用户名: ${member.userName ?? '未知用户名'}'),
                     subtitle: Text('角色: ${member.role ?? '未知角色'}'),
+                    trailing: MouseCursorClick(
+                      child: Button(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all(
+                            Colors.red.lighter,
+                          ),
+                        ),
+                        child: const Text('删除'),
+                        onPressed: () {
+                          membersViewModel.teamSelfMumberDelete(
+                            member.userId.toString(),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               ),

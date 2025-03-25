@@ -215,12 +215,12 @@ class _HomeViewState extends State<HomeView> {
       SidebarXItem(
         icon: material.Icons.upload,
         label: '发票上传',
-        onTap: () => _updateIndex(context, 3, isUploading),
+        onTap: () => _updateIndex(context, 2, isUploading),
       ),
       SidebarXItem(
         icon: material.Icons.help,
         label: '帮助',
-        onTap: () => _updateIndex(context, 4, false),
+        onTap: () => _updateIndex(context, 3, false),
       ),
     ];
   }

@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class TeamInfoModel {
   final int id;
   final String name;
@@ -45,4 +47,34 @@ class TeamMember {
       avatar: json['avatar'] ?? '',
     );
   }
+}
+
+class TeamUserIdsModel extends Equatable {
+  final int? teamId;
+  final int? captainId;
+  final List<int>? userIds;
+
+  const TeamUserIdsModel({
+    required this.teamId,
+    required this.captainId,
+    required this.userIds,
+  });
+
+  /// JSON 数据转换为模型对象
+  factory TeamUserIdsModel.fromJson(Map<String, dynamic> json) {
+    return TeamUserIdsModel(
+      teamId: json['team_id'],
+      captainId: json['captain_id'],
+      userIds:
+          (json['user_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    );
+  }
+
+  /// 转换模型为 JSON 格式
+  Map<String, dynamic> toJson() {
+    return {'team_id': teamId, 'captain_id': captainId, 'user_ids': userIds};
+  }
+
+  @override
+  List<Object?> get props => [teamId, captainId, userIds];
 }
