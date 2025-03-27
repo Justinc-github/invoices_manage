@@ -166,7 +166,6 @@ class InvoiceSelfView extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-
               Container(
                 constraints: const BoxConstraints(maxWidth: 200),
                 child: Text(
@@ -174,6 +173,7 @@ class InvoiceSelfView extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 10),
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: IconButton(

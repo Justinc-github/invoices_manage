@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/core/models/auth_info_model.dart';
-import 'package:management_invoices/core/models/team_info_model.dart';
 
 class MembersRepository {
   MembersRepository({Dio? dio}) : dio = dio ?? Dio();
@@ -13,6 +12,7 @@ class MembersRepository {
   static const String _teamIds = '$_baseUrl/teams/user/';
   static const String _userIds = '$_baseUrl/teams/members/team/';
 
+  // 获取队伍的 user_ids
   Future<Map<String, dynamic>> userIds(String teamId) async {
     // 修改返回类型
     try {

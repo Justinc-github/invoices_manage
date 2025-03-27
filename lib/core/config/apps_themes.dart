@@ -125,6 +125,7 @@ Future<void> windowsinItialization() async {
     titleBarStyle: TitleBarStyle.hidden, // 隐藏标题栏
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setPreventClose(true);
     await windowManager.setAsFrameless(); // 设置无边框
     await windowManager.setBounds(Rect.fromLTWH(100, 100, 1280, 720));
     await windowManager.show();
