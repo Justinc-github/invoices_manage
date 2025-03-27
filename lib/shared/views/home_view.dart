@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:management_invoices/features/members/views/members_self_team_view.dart';
 import 'package:management_invoices/shared/views/title_bar_view.dart';
 import 'package:provider/provider.dart';
@@ -217,10 +218,16 @@ class _HomeViewState extends State<HomeView> {
         label: '发票上传',
         onTap: () => _updateIndex(context, 2, isUploading),
       ),
+
       SidebarXItem(
         icon: material.Icons.help,
         label: '帮助',
         onTap: () => _updateIndex(context, 3, false),
+      ),
+      SidebarXItem(
+        icon: material.Icons.people,
+        label: '所有成员',
+        onTap: () => _updateIndex(context, 4, isUploading),
       ),
     ];
   }
@@ -254,6 +261,8 @@ class _HomeViewState extends State<HomeView> {
       case 3:
         return const HelpView();
       case 4:
+        return const MembersAllView();
+      case 5:
         return const MembersSelfTeamView();
       default:
         return const Center(child: Text('页面未找到'));

@@ -21,7 +21,71 @@ class MembersViewModel extends ChangeNotifier {
   // 在 MembersViewModel 类中添加
   String? _currentUserRole;
   String? get currentUserRole => _currentUserRole;
+  String? _currentUserId;
+  String? get currentUserId => _currentUserId;
 
+  // 分页相关状态
+  int _currentPage = 1;
+  int _itemsPerPage = 10;
+  int _totalItems = 0;
+
+  int get currentPage => _currentPage;
+  int get itemsPerPage => _itemsPerPage;
+  int get totalItems => _totalItems;
+  int get totalPages => (_totalItems / _itemsPerPage).ceil();
+  // 分页数据
+  List<AuthInfoModel> get paginatedData {
+    final start = (_currentPage - 1) * _itemsPerPage;
+    final end = start + _itemsPerPage;
+    return _membersInfos.sublist(
+      start.clamp(0, _membersInfos.length),
+      end.clamp(0, _membersInfos.length),
+    );
+  }
+
+  void setCurrentPage(int page) {
+    _currentPage = page;
+    notifyListeners();
+  }
+
+  void setItemsPerPage(int size) {
+    _itemsPerPage = size;
+    _currentPage = 1;
+    notifyListeners();
+  }
+
+  // 获取所有成员信息
+  Future<void> memberAllInfosGet() async {
+    if (_isLoading) return;
+    _isLoading = true;
+    notifyListeners();
+    _membersInfos = [];
+    try {
+      // 获取所有成员信息
+      final allMembers = await _membersRepository.allMumberInfoGet() ?? [];
+      // debugPrint('All fetched members: $allMembers');
+
+      final seenIds = <int>{};
+      final uniqueMembers = <AuthInfoModel>[];
+
+      for (var member in allMembers) {
+        if (!seenIds.contains(member.id)) {
+          seenIds.add(member.id!);
+          uniqueMembers.add(member);
+        }
+      }
+      _membersInfos = uniqueMembers;
+      _totalItems = _membersInfos.length;
+      debugPrint('Unique members: $_membersInfos');
+    } catch (e) {
+      debugPrint('Error fetching team info: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 获取相关队伍成员信息
   Future<void> memberInfosGet() async {
     if (_isLoading) return;
     _isLoading = true;
@@ -45,7 +109,7 @@ class MembersViewModel extends ChangeNotifier {
 
         // 2. 获取所有成员信息
         final allMembers = await _membersRepository.allMumberInfoGet() ?? [];
-
+        _totalItems = allMembers.length;
         // 3. 过滤掉在user_ids中的成员
         _membersInfos =
             allMembers.where((member) {
@@ -64,10 +128,6 @@ class MembersViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // 在MembersViewModel中添加以下属性
-  String? _currentUserId;
-  String? get currentUserId => _currentUserId;
 
   // 修改队伍信息获取方法
   Future<void> teamSelfMumbersGet() async {

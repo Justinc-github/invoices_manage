@@ -64,7 +64,7 @@ class AvatarView extends StatelessWidget {
                       title: '我的队伍',
                     ),
                     onTap: () {
-                      home.updateSelectedIndex(4);
+                      home.updateSelectedIndex(5);
                     },
                   ),
                   material.PopupMenuItem<String>(
