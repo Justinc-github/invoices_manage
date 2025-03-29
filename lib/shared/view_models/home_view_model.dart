@@ -16,6 +16,13 @@ class HomeViewModel with ChangeNotifier, WindowListener {
   bool _maximized = false;
   bool get maximized => _maximized;
 
+  // 重置索引
+  Future<void> resetSelectedIndex() async {
+    _selectedIndex = 0;
+    debugPrint(selectedIndex.toString());
+    notifyListeners();
+  }
+
   // 更新索引导航
   void updateSelectedIndex(int index) {
     _selectedIndex = index;

@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
+import 'package:management_invoices/features/members/view_models/members_view_model.dart';
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
+import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -337,7 +341,13 @@ class AuthViewModel extends ChangeNotifier {
   }
 
   // 退出登录
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
+    final homeVM = Provider.of<HomeViewModel>(context, listen: false);
+    await homeVM.resetSelectedIndex();
+    final invoiceVM = Provider.of<InvoiceSelfViewModel>(context, listen: false);
+    await invoiceVM.resetInvoiceData();
+    final memberVM = Provider.of<MembersViewModel>(context, listen: false);
+    await memberVM.resetAllMumebrs();
     await clearCredentials();
     await dialogOpen();
     await clearAllPreferences();

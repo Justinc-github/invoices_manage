@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
+import 'package:management_invoices/features/invoice/views/invoice_gather_view.dart';
+import 'package:management_invoices/features/invoice/views/invoice_other_view.dart';
+import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:management_invoices/features/members/views/members_self_team_view.dart';
 import 'package:management_invoices/shared/views/title_bar_view.dart';
@@ -57,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
     );
     final auth = context.watch<AuthViewModel>();
     final home = context.watch<HomeViewModel>();
-
+    final invoiceSVM = context.read<InvoiceSelfViewModel>();
     _syncControllerIndex(selectedIndex);
 
     _handleAuthState(context, home, auth);
@@ -81,7 +85,11 @@ class _HomeViewState extends State<HomeView> {
                   children: [
                     _buildSidebar(context, isUploading),
                     Expanded(
-                      child: _buildBodyContent(_controller.selectedIndex),
+                      child: _buildBodyContent(
+                        _controller.selectedIndex,
+                        invoiceSVM.otherId.toString(),
+                        invoiceSVM.userName.toString(),
+                      ),
                     ),
                   ],
                 );
@@ -218,16 +226,20 @@ class _HomeViewState extends State<HomeView> {
         label: '发票上传',
         onTap: () => _updateIndex(context, 2, isUploading),
       ),
-
-      SidebarXItem(
-        icon: material.Icons.help,
-        label: '帮助',
-        onTap: () => _updateIndex(context, 3, false),
-      ),
       SidebarXItem(
         icon: material.Icons.people,
         label: '所有成员',
+        onTap: () => _updateIndex(context, 3, isUploading),
+      ),
+      SidebarXItem(
+        icon: material.Icons.safety_check,
+        label: '数据汇总',
         onTap: () => _updateIndex(context, 4, isUploading),
+      ),
+      SidebarXItem(
+        icon: material.Icons.help,
+        label: '帮助',
+        onTap: () => _updateIndex(context, 5, false),
       ),
     ];
   }
@@ -242,7 +254,6 @@ class _HomeViewState extends State<HomeView> {
       );
       return;
     }
-
     final homeVM = context.read<HomeViewModel>();
     if (index != homeVM.selectedIndex) {
       homeVM.updateSelectedIndex(index);
@@ -250,7 +261,11 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
-  Widget _buildBodyContent(int index) {
+  Widget _buildBodyContent(int index, String otherId, String userName) {
+    final invoiceSelfViewModel = context.read<InvoiceSelfViewModel>();
+    if (index == 1) {
+      invoiceSelfViewModel.invoiceSelf();
+    }
     switch (index) {
       case 0:
         return const HomeContentView();
@@ -259,11 +274,15 @@ class _HomeViewState extends State<HomeView> {
       case 2:
         return const InvoiceUploadView();
       case 3:
-        return const HelpView();
-      case 4:
         return const MembersAllView();
+      case 4:
+        return const InvoiceGatherView();
       case 5:
+        return const HelpView();
+      case 6:
         return const MembersSelfTeamView();
+      case 7:
+        return InvoiceOtherView(userId: otherId, userName: userName);
       default:
         return const Center(child: Text('页面未找到'));
     }

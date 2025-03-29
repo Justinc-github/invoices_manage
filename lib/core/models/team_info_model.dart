@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-class TeamInfoModel {
+class TeamInfoModel extends Equatable {
   final int id;
   final String name;
   final String headmanName;
   final List<TeamMember> members;
 
-  TeamInfoModel({
+  const TeamInfoModel({
     required this.id,
     required this.name,
     required this.headmanName,
@@ -24,15 +24,17 @@ class TeamInfoModel {
               .toList(),
     );
   }
+  @override
+  List<Object?> get props => [id, name, headmanName, members];
 }
 
-class TeamMember {
+class TeamMember extends Equatable {
   final int userId;
   final String role;
   final String userName;
   final String avatar;
 
-  TeamMember({
+  const TeamMember({
     required this.userId,
     required this.role,
     required this.userName,
@@ -47,6 +49,9 @@ class TeamMember {
       avatar: json['avatar'] ?? '',
     );
   }
+
+  @override
+  List<Object?> get props => [userId, role, userName, avatar];
 }
 
 class TeamUserIdsModel extends Equatable {

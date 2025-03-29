@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/shared/utils/login_text_style.dart';
 import 'package:provider/provider.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 
@@ -210,7 +211,7 @@ class _VerificationCodeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120,
+      width: 100,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -259,23 +260,7 @@ class _NextStepButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('已有账号？'),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // 关闭登录对话框
-                showDialog(
-                  context: context,
-                  barrierDismissible: false, // 阻止点击外部关闭
-                  builder: (context) => const LoginDialog(),
-                );
-              },
-              child: Text(
-                '立即登录',
-                style: TextStyle(
-                  color: Colors.blue[700],
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            LoginTextStyle(text: '立即登录', child: const LoginDialog()),
           ],
         ),
       ],

@@ -38,7 +38,6 @@ class AuthRepository {
         prefs.setString('message', jsonEncode(responseData['message']));
         // 调试输出
         debugPrint('Stored UserID: ${prefs.getString('user_id')}');
-        debugPrint('所属队伍编号: ${prefs.getString('team_id')}');
         return (true, message);
       }
       return (false, message);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:management_invoices/features/auth/views/register_view.dart';
 import 'package:management_invoices/features/auth/views/retrieve_view.dart';
+import 'package:management_invoices/shared/utils/login_text_style.dart';
 import 'package:provider/provider.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 
@@ -125,41 +126,9 @@ class LoginDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => const RegisterDialog(),
-                        );
-                      },
-                      child: Text(
-                        '立即注册',
-                        style: TextStyle(
-                          color: Colors.blue[700],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    LoginTextStyle(text: '立即注册', child: const RegisterDialog()),
                     const Text('|'),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => const RetrieveDialog(),
-                        );
-                      },
-                      child: Text(
-                        '忘记密码',
-                        style: TextStyle(
-                          color: Colors.blue[700],
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    LoginTextStyle(text: '找回密码', child: const RetrieveDialog()),
                   ],
                 ),
               ],

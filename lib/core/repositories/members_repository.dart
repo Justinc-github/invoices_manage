@@ -7,16 +7,16 @@ class MembersRepository {
   final Dio dio;
 
   static const String _baseUrl = 'http://127.0.0.1:8000';
-  static const String _urlAllMumberInfo = 'http://47.95.171.19/users';
+  static const String _urlAllMumberInfo = 'http://127.0.0.1:8000/users';
   static const String _teamSelfMumbers = '$_baseUrl/teams/';
   static const String _teamIds = '$_baseUrl/teams/user/';
   static const String _userIds = '$_baseUrl/teams/members/team/';
 
   // 获取队伍的 user_ids
-  Future<Map<String, dynamic>> userIds(String teamId) async {
+  Future<Map<String, dynamic>> userIds(String userId) async {
     // 修改返回类型
     try {
-      final response = await dio.get('$_userIds$teamId');
+      final response = await dio.get('$_userIds$userId');
       if (response.statusCode == 200) {
         // debugPrint(response.data.toString());
         return response.data; // 返回原始数据

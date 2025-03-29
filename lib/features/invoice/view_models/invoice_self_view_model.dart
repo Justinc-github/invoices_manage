@@ -13,22 +13,55 @@ class InvoiceSelfViewModel with ChangeNotifier {
   InvoiceSelfViewModel(this._invoiceSelfRespositiory);
 
   bool _isLoading = false; // 新增加载状态
+  bool _isLoadingOther = false; // 新增加载状态
   Decimal _totalAmount = Decimal.zero; // 存储发票的总金额
+  Decimal _totalOtherAmount = Decimal.zero; // 存储发票的总金额
 
   // 分页相关状态
   List<InvoiceModel> _invoicesInfos = [];
+  List<InvoiceModel> _invoicesOtherInfos = [];
   String? _userInfoString;
   int _currentPage = 1;
   int _itemsPerPage = 10;
   int _totalItems = 0;
+  String _otherId = '';
+  String _userName = '';
 
+  bool get isLoadingOther => _isLoadingOther;
+  String get userName => _userName;
   List<InvoiceModel> get invoiceInfos => _invoicesInfos;
+  List<InvoiceModel> get invoicesOtherInfos => _invoicesOtherInfos;
   bool get isLoading => _isLoading;
   Decimal get totalAmount => _totalAmount;
+  Decimal get totalOtherAmount => _totalOtherAmount;
   int get currentPage => _currentPage;
+  String get otherId => _otherId;
   int get itemsPerPage => _itemsPerPage;
   int get totalItems => _totalItems;
   int get totalPages => (_totalItems / _itemsPerPage).ceil();
+
+  Future<void> resetInvoiceData() async {
+    _currentPage = 1;
+    _itemsPerPage = 10;
+    _totalItems = 0;
+    _invoicesInfos = [];
+    notifyListeners();
+  }
+
+  Future<void> userInvoiceSelfGet(String userId, String userName) async {
+    _otherId = userId;
+    _userName = userName;
+    await getInvoiceOther(userId);
+    notifyListeners();
+  }
+
+  void calculateOtherTotalAmount() {
+    _totalOtherAmount = _invoicesOtherInfos.fold<Decimal>(
+      Decimal.zero,
+      (sum, item) => sum + item.amountInFigures,
+    );
+    notifyListeners();
+  }
 
   // 分页数据
   List<InvoiceModel> get paginatedData {
@@ -71,6 +104,28 @@ class InvoiceSelfViewModel with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> getInvoiceOther(String userId) async {
+    _isLoadingOther = true;
+    notifyListeners();
+    try {
+      final result = await _invoiceSelfRespositiory.invoiceInfoGet(userId);
+      _invoicesOtherInfos = result ?? [];
+      debugPrint(_invoicesOtherInfos.toString());
+      _totalItems = _invoicesOtherInfos.length;
+      _isLoading = false;
+      notifyListeners();
+      calculateOtherTotalAmount();
+    } catch (e) {
+      debugPrint('Error fetching invoices: $e');
+      _invoicesOtherInfos = [];
+      _totalAmount = Decimal.zero;
+      _isLoading = false;
+      notifyListeners();
+    }
+    _isLoadingOther = false;
+    notifyListeners();
   }
 
   void calculateTotalAmount() {

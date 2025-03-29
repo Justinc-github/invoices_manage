@@ -121,13 +121,13 @@ Future<void> windowsinItialization() async {
 
   WindowOptions windowOptions = const WindowOptions(
     backgroundColor: Colors.transparent, // 确保背景透明
-    skipTaskbar: false,
+    skipTaskbar: false, // 不显示标题栏
     titleBarStyle: TitleBarStyle.hidden, // 隐藏标题栏
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.setPreventClose(true);
+    await windowManager.center();
     await windowManager.setAsFrameless(); // 设置无边框
-    await windowManager.setBounds(Rect.fromLTWH(100, 100, 1280, 720));
     await windowManager.show();
     await windowManager.focus();
   });

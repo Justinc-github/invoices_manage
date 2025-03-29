@@ -7,15 +7,14 @@ import 'package:management_invoices/core/repositories/avatar_respositiory.dart';
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_self_respositiory.dart';
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
 
+import 'package:management_invoices/shared/view_models/home_view_model.dart';
+import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/help/view_models/help_view_model.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:management_invoices/features/home/view_models/home_content_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
-
-import 'package:management_invoices/shared/view_models/home_view_model.dart';
-import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 
 // 全局Provider配置
 class AppProviders extends StatelessWidget {
@@ -27,7 +26,7 @@ class AppProviders extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // 用户头像
+        // 用户头像及下拉菜单
         Provider(create: (_) => AvatarRepository()),
         ChangeNotifierProvider(
           create:

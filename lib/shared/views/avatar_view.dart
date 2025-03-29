@@ -64,7 +64,7 @@ class AvatarView extends StatelessWidget {
                       title: '我的队伍',
                     ),
                     onTap: () {
-                      home.updateSelectedIndex(5);
+                      home.updateSelectedIndex(6);
                     },
                   ),
                   material.PopupMenuItem<String>(
@@ -74,7 +74,7 @@ class AvatarView extends StatelessWidget {
                       color: material.Colors.red,
                       title: '退出登录',
                     ),
-                    onTap: () => auth.logout(),
+                    onTap: () => auth.logout(context),
                   ),
                 ],
           ),

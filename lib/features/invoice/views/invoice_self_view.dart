@@ -5,7 +5,6 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:management_invoices/core/models/invoice_self_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
-import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 
 class InvoiceSelfView extends StatelessWidget {
   const InvoiceSelfView({super.key});
@@ -13,19 +12,7 @@ class InvoiceSelfView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
-    final invoiceUploadViewModel = context.watch<InvoiceUploadViewModel>();
 
-    // 添加数据加载逻辑
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // 当上传成功时，强制刷新数据
-      if (invoiceUploadViewModel.isUploaded) {
-        invoiceSelfViewModel.invoiceSelf();
-        invoiceUploadViewModel.resetUploadStatus(); // 新增方法重置状态
-      } else if (invoiceSelfViewModel.invoiceInfos.isEmpty &&
-          !invoiceSelfViewModel.isLoading) {
-        invoiceSelfViewModel.invoiceSelf();
-      }
-    });
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -51,7 +38,7 @@ class InvoiceSelfView extends StatelessWidget {
                     columnWidthMode: ColumnWidthMode.fill,
                     gridLinesVisibility: GridLinesVisibility.both,
                     headerGridLinesVisibility: GridLinesVisibility.both,
-                    rowHeight: 52,
+                    rowHeight: 60,
                     source: invoiceDataSource,
                     columns: [
                       GridColumn(

@@ -28,7 +28,9 @@ class MembersViewModel extends ChangeNotifier {
   int _currentPage = 1;
   int _itemsPerPage = 10;
   int _totalItems = 0;
+  bool _isTeam = false;
 
+  bool get isTeam => _isTeam;
   int get currentPage => _currentPage;
   int get itemsPerPage => _itemsPerPage;
   int get totalItems => _totalItems;
@@ -41,6 +43,17 @@ class MembersViewModel extends ChangeNotifier {
       start.clamp(0, _membersInfos.length),
       end.clamp(0, _membersInfos.length),
     );
+  }
+
+  Future<void> resetAllMumebrs() async {
+    _membersInfos = [];
+    _teamInfos = [];
+    _isTeam = false;
+    _currentPage = 1;
+    _isLoading = false;
+    _itemsPerPage = 10;
+    _totalItems = 0;
+    notifyListeners();
   }
 
   void setCurrentPage(int page) {
@@ -76,7 +89,7 @@ class MembersViewModel extends ChangeNotifier {
       }
       _membersInfos = uniqueMembers;
       _totalItems = _membersInfos.length;
-      debugPrint('Unique members: $_membersInfos');
+      // debugPrint('Unique members: $_membersInfos');
     } catch (e) {
       debugPrint('Error fetching team info: $e');
     } finally {
@@ -140,25 +153,28 @@ class MembersViewModel extends ChangeNotifier {
 
       final userId = prefs.getString('user_id') ?? '';
       final teamIds = await _membersRepository.teamIds(userId);
-      _teamInfos = [];
-      for (final teamId in teamIds) {
-        final response = await _membersRepository.teamSelfMumbers(
-          teamId.toString(),
-        );
-        if (response != null) {
-          _teamInfo = TeamInfoModel.fromJson(response);
-          final List<dynamic> members = response['members'] ?? [];
-          final currentUser = members.firstWhere(
-            (member) => member['user_id'].toString() == userId,
-            orElse: () => null,
+      if (teamIds.isEmpty) {
+        _isTeam = true;
+        return;
+      } else {
+        for (final teamId in teamIds) {
+          final response = await _membersRepository.teamSelfMumbers(
+            teamId.toString(),
           );
-          // 设置当前用户角色
-          _currentUserRole = currentUser != null ? currentUser['role'] : null;
-          _teamInfos.add(_teamInfo);
-          // debugPrint(_teamInfos.toString());
-        } else {
-          debugPrint('No teams found for the user.');
-          _teamInfo = null;
+          if (response != null) {
+            _teamInfo = TeamInfoModel.fromJson(response);
+            final List<dynamic> members = response['members'] ?? [];
+            final currentUser = members.firstWhere(
+              (member) => member['user_id'].toString() == userId,
+              orElse: () => null,
+            );
+            // 设置当前用户角色
+            _currentUserRole = currentUser != null ? currentUser['role'] : null;
+            _teamInfos.add(_teamInfo);
+          } else {
+            debugPrint('No teams found for the user.');
+            _teamInfo = null;
+          }
         }
       }
     } catch (e) {
@@ -174,7 +190,7 @@ class MembersViewModel extends ChangeNotifier {
     if (_isLoading) return; // 添加重复请求拦截
     _isLoading = true;
     notifyListeners();
-
+    debugPrint('添加成员: $userId, $teamId');
     try {
       await _membersRepository.teamSelfMumberAdd(teamId, userId);
       // 使用单独的await来确保每个操作完成

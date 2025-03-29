@@ -1,6 +1,9 @@
 // retrieve_view.dart
 import 'package:flutter/material.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
+import 'package:management_invoices/features/auth/views/login_view.dart';
+import 'package:management_invoices/features/auth/views/register_view.dart';
+import 'package:management_invoices/shared/utils/login_text_style.dart';
 import 'package:provider/provider.dart';
 
 class RetrieveDialog extends StatelessWidget {
@@ -162,6 +165,22 @@ class _RetrieveStep1 extends StatelessWidget {
             minimumSize: const Size(double.infinity, 48),
           ),
           child: const Text('下一步'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LoginTextStyle(
+              key: Key('登录'),
+              text: '立即登录',
+              child: const LoginDialog(),
+            ),
+            const Text('|'),
+            LoginTextStyle(
+              key: Key('注册'),
+              text: '立即注册',
+              child: const RegisterDialog(),
+            ),
+          ],
         ),
       ],
     );
