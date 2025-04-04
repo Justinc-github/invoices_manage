@@ -15,7 +15,9 @@ class MembersSelfTeamView extends StatelessWidget {
     // 在帧绘制完成后执行回调
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // 如果队伍信息为空且不在加载中，则获取队伍信息
-      if (membersViewModel.teamInfos.isEmpty && !membersViewModel.isLoading) {
+      if (membersViewModel.teamInfos.isEmpty &&
+          !membersViewModel.isLoading &&
+          !membersViewModel.isLoaded) {
         membersViewModel.teamSelfMumbersGet();
       }
     });

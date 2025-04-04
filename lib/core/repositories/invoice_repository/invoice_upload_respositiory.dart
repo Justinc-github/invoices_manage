@@ -34,20 +34,27 @@ class InvoiceUploadRepository {
 
   Future<String> uploadToOSS(File file, int userId) async {
     final fileName = path.basename(file.path); // 获取正确文件名
+    final invoiceUrl = 'images/$userId/$fileName';
+    final encodedinvoiceUrl = Uri.encodeComponent(invoiceUrl); // 新增编码步骤
     await uploadImage(file, userId);
-    return 'https://fapiao.s3.bitiful.net/images/$userId/$fileName'; // 路径拼接
+
+    return 'https://fapiao.s3.bitiful.net/$encodedinvoiceUrl'; // 路径拼接
   }
 
+  // https://fapiao.s3.bitiful.net/images%2F2%2F%E6%B3%95%E5%85%B0%E8%9E%BA%E6%AF%8D-M4.jpg
+  // https://fapiao.s3.bitiful.net/images%2F2%2F%E6%B3%95%E5%85%B0%E8%9E%BA%E6%AF%8D-M4.jpg
   Future<void> uploadImage(File imageFile, int userId) async {
     try {
       final fileName = path.basename(imageFile.path); // 获取正确文件名
+      // print('文件路径: $imageFile.path');
       final formData = FormData.fromMap({
+        'user_id': userId.toString(),
         'file': await MultipartFile.fromFile(
           imageFile.path,
           filename: fileName,
         ),
       });
-      await _dio.post('http://47.95.171.19/upload', data: formData);
+      await _dio.post('http://127.0.0.1:8000/upload', data: formData);
     } on DioException catch (e) {
       // 明确捕获 Dio 异常
       throw Exception('上传到服务器失败: ${e.response?.data ?? e.message}');
@@ -57,8 +64,8 @@ class InvoiceUploadRepository {
   Future<String> submitInvoiceInfo(String imageUrl, int userId) async {
     try {
       final response = await _dio.post(
-        'http://47.95.171.19/admin_invoice/invoice_info',
-        data: {'image_url': imageUrl, 'user_id': userId},
+        'http://127.0.0.1:8000/admin_invoice/invoice_info',
+        data: {'image_url': imageUrl, 'user_id': userId.toString()},
       );
 
       if (response.statusCode != 200) {

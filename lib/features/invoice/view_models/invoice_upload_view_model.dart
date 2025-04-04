@@ -41,6 +41,7 @@ class InvoiceUploadViewModel extends ChangeNotifier {
             file,
             userId,
           );
+          debugPrint('上传成功: $imageUrl');
           final result = await _invoiceUploadRepository.submitInvoiceInfo(
             imageUrl,
             userId,

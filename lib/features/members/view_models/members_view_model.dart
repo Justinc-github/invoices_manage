@@ -9,11 +9,13 @@ class MembersViewModel extends ChangeNotifier {
   MembersViewModel(this._membersRepository);
 
   bool _isLoading = false;
+  bool _isLoaded = false;
   List<AuthInfoModel> _membersInfos = [];
   TeamInfoModel? _teamInfo;
 
   List<AuthInfoModel> get membersInfos => _membersInfos;
   bool get isLoading => _isLoading;
+  bool get isLoaded => _isLoaded;
   TeamInfoModel? get teamInfo => _teamInfo;
 
   List<dynamic> _teamInfos = [];
@@ -49,6 +51,7 @@ class MembersViewModel extends ChangeNotifier {
     _membersInfos = [];
     _teamInfos = [];
     _isTeam = false;
+    _isLoaded = false;
     _currentPage = 1;
     _isLoading = false;
     _itemsPerPage = 10;
@@ -71,6 +74,7 @@ class MembersViewModel extends ChangeNotifier {
   Future<void> memberAllInfosGet() async {
     if (_isLoading) return;
     _isLoading = true;
+
     notifyListeners();
     _membersInfos = [];
     try {
@@ -145,6 +149,7 @@ class MembersViewModel extends ChangeNotifier {
   // 修改队伍信息获取方法
   Future<void> teamSelfMumbersGet() async {
     _isLoading = true;
+    _isLoaded = true;
     notifyListeners();
     _teamInfos = [];
     try {

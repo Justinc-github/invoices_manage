@@ -57,6 +57,7 @@ flutter:
 
 
 msix_config:
+  msix_name: 发票管理系统            # 应用名称
   certificate_path: C:/Users/justinc/Documents/CERTIFICATE.pfx         # PFX证书文件路径
   certificate_password: SJCsjc0315       # 证书密码（创建pfx时设置的导出密码）
   logo_path: assets/images/icon.png       # 应用图标（建议至少256x256）

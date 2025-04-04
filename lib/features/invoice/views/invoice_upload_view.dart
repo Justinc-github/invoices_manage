@@ -1,3 +1,4 @@
+import 'package:management_invoices/shared/utils/mouse_cursor.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -88,7 +89,7 @@ class InvoiceUploadView extends StatelessWidget {
           (context) => ContentDialog(
             title: const Text('上传结果'),
             content: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 300),
+              constraints: BoxConstraints(maxHeight: 250),
               child: ListView.builder(
                 itemCount: messages.length,
                 itemBuilder:
@@ -107,9 +108,11 @@ class InvoiceUploadView extends StatelessWidget {
               ),
             ),
             actions: [
-              FilledButton(
-                child: const Text('关闭'),
-                onPressed: () => Navigator.pop(context),
+              MouseCursorClick(
+                child: FilledButton(
+                  child: const Text('关闭'),
+                  onPressed: () => Navigator.pop(context),
+                ),
               ),
             ],
           ),
