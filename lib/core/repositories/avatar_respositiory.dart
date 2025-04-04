@@ -6,7 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AvatarRepository {
-  static const String _uploadPath = 'http://127.0.0.1:8000/img_upload';
+  static const String _uploadPath = 'http://47.95.171.19/img_upload';
   final _uploadUrl = 'https://www.picgo.net/api/1/upload';
   final Dio dio; // 通过依赖注入 Dio 实例
 

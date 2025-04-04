@@ -54,7 +54,7 @@ class InvoiceUploadRepository {
           filename: fileName,
         ),
       });
-      await _dio.post('http://127.0.0.1:8000/upload', data: formData);
+      await _dio.post('http://47.95.171.19/upload', data: formData);
     } on DioException catch (e) {
       // 明确捕获 Dio 异常
       throw Exception('上传到服务器失败: ${e.response?.data ?? e.message}');
@@ -64,7 +64,7 @@ class InvoiceUploadRepository {
   Future<String> submitInvoiceInfo(String imageUrl, int userId) async {
     try {
       final response = await _dio.post(
-        'http://127.0.0.1:8000/admin_invoice/invoice_info',
+        'http://47.95.171.19/admin_invoice/invoice_info',
         data: {'image_url': imageUrl, 'user_id': userId.toString()},
       );
 
