@@ -142,6 +142,7 @@ class AuthViewModel extends ChangeNotifier {
 
     try {
       _isCodeSent = true;
+      _countdown = 60;
       notifyListeners();
       _code = await _repository.sendPasswordResetCode(emailController.text);
       _startCountdown();
@@ -209,7 +210,7 @@ class AuthViewModel extends ChangeNotifier {
 
   // 更新倒计时逻辑
   void _startCountdown() {
-    _countdown = 60;
+    notifyListeners();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_countdown > 0) {
         _countdown--;
@@ -345,9 +346,10 @@ class AuthViewModel extends ChangeNotifier {
     final homeVM = Provider.of<HomeViewModel>(context, listen: false);
     await homeVM.resetSelectedIndex();
     final invoiceVM = Provider.of<InvoiceSelfViewModel>(context, listen: false);
-    await invoiceVM.resetInvoiceData();
+    await invoiceVM.resetInvoice();
     final memberVM = Provider.of<MembersViewModel>(context, listen: false);
     await memberVM.resetAllMumebrs();
+
     await clearCredentials();
     await dialogOpen();
     await clearAllPreferences();

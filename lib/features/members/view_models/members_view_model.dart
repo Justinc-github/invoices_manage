@@ -146,7 +146,7 @@ class MembersViewModel extends ChangeNotifier {
   Future<void> teamSelfMumbersGet() async {
     _isLoading = true;
     notifyListeners();
-
+    _teamInfos = [];
     try {
       final prefs = await SharedPreferences.getInstance();
       _currentUserId = prefs.getString('user_id'); // 存储当前用户ID

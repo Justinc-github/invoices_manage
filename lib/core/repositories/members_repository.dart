@@ -6,8 +6,8 @@ class MembersRepository {
   MembersRepository({Dio? dio}) : dio = dio ?? Dio();
   final Dio dio;
 
-  static const String _baseUrl = 'http://127.0.0.1:8000';
-  static const String _urlAllMumberInfo = 'http://127.0.0.1:8000/users';
+  static const String _baseUrl = 'http://47.95.171.19';
+  static const String _urlAllMumberInfo = 'http://47.95.171.19/users';
   static const String _teamSelfMumbers = '$_baseUrl/teams/';
   static const String _teamIds = '$_baseUrl/teams/user/';
   static const String _userIds = '$_baseUrl/teams/members/team/';

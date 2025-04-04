@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart' as material;
-import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
+
+import 'package:provider/provider.dart';
+import 'package:sidebarx/sidebarx.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:management_invoices/features/invoice/views/invoice_gather_view.dart';
 import 'package:management_invoices/features/invoice/views/invoice_other_view.dart';
-import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:management_invoices/features/members/views/members_all_view.dart';
 import 'package:management_invoices/features/members/views/members_self_team_view.dart';
 import 'package:management_invoices/shared/views/title_bar_view.dart';
-import 'package:provider/provider.dart';
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:sidebarx/sidebarx.dart';
 
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 
 import 'package:management_invoices/shared/views/dialog_view.dart';
@@ -262,9 +263,9 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildBodyContent(int index, String otherId, String userName) {
-    final invoiceSelfViewModel = context.read<InvoiceSelfViewModel>();
+    final invoiceSVM = context.read<InvoiceSelfViewModel>();
     if (index == 1) {
-      invoiceSelfViewModel.invoiceSelf();
+      invoiceSVM.invoiceSelf();
     }
     switch (index) {
       case 0:
@@ -276,7 +277,7 @@ class _HomeViewState extends State<HomeView> {
       case 3:
         return const MembersAllView();
       case 4:
-        return const InvoiceGatherView();
+        return InvoiceGatherView();
       case 5:
         return const HelpView();
       case 6:

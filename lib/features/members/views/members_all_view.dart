@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/shared/utils/mouse_cursor.dart';
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
@@ -6,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:intl/intl.dart';
 
 import 'package:management_invoices/core/models/auth_info_model.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';

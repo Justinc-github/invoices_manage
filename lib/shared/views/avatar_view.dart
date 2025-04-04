@@ -52,11 +52,12 @@ class AvatarView extends StatelessWidget {
                     ? Colors.green['dark']
                     : Colors.white.withAlpha(150),
 
-            offset: const Offset(0, 50), // 向下偏移 30 像素，根据需要调整
+            offset: const Offset(0, 50), // 向下偏移 50 像素
             itemBuilder:
                 (BuildContext context) => <material.PopupMenuEntry<String>>[
                   // 修改 AvatarView 中的 PopupMenuItem
                   material.PopupMenuItem<String>(
+                    height: 20.0,
                     value: 'team_self',
                     child: const _MenuListTile(
                       icon: material.Icons.telegram,
@@ -68,6 +69,7 @@ class AvatarView extends StatelessWidget {
                     },
                   ),
                   material.PopupMenuItem<String>(
+                    height: 20.0,
                     value: 'Logout',
                     child: const _MenuListTile(
                       icon: material.Icons.logout,

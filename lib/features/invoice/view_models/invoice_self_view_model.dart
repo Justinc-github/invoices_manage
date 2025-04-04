@@ -24,9 +24,13 @@ class InvoiceSelfViewModel with ChangeNotifier {
   int _currentPage = 1;
   int _itemsPerPage = 10;
   int _totalItems = 0;
+  int _charType = 0;
   String _otherId = '';
   String _userName = '';
+  bool _isLoadingCharType = false;
 
+  int get charType => _charType;
+  bool get isLoadingCharType => _isLoadingCharType;
   bool get isLoadingOther => _isLoadingOther;
   String get userName => _userName;
   List<InvoiceModel> get invoiceInfos => _invoicesInfos;
@@ -40,10 +44,18 @@ class InvoiceSelfViewModel with ChangeNotifier {
   int get totalItems => _totalItems;
   int get totalPages => (_totalItems / _itemsPerPage).ceil();
 
-  Future<void> resetInvoiceData() async {
+  Future<void> charTypeChange(int type) async {
+    _charType = type;
+    debugPrint(_charType.toString());
+    notifyListeners();
+  }
+
+  Future<void> resetInvoice() async {
     _currentPage = 1;
     _itemsPerPage = 10;
     _totalItems = 0;
+    _charType = 0;
+    _isLoadingCharType = false;
     _invoicesInfos = [];
     notifyListeners();
   }
@@ -76,7 +88,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
   Future<void> invoiceSelf() async {
     if (_isLoading) return;
     _isLoading = true;
-
+    _isLoadingCharType = true;
     final prefs = await SharedPreferences.getInstance();
     _userInfoString = prefs.getString('userInfo');
 
@@ -93,6 +105,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
       );
 
       _invoicesInfos = result ?? [];
+      debugPrint(_invoicesInfos.toString());
       _totalItems = _invoicesInfos.length;
       _isLoading = false;
       notifyListeners();
@@ -110,6 +123,8 @@ class InvoiceSelfViewModel with ChangeNotifier {
     _isLoadingOther = true;
     notifyListeners();
     try {
+      _invoicesInfos = [];
+      _invoicesOtherInfos = [];
       final result = await _invoiceSelfRespositiory.invoiceInfoGet(userId);
       _invoicesOtherInfos = result ?? [];
       debugPrint(_invoicesOtherInfos.toString());

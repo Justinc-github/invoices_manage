@@ -19,14 +19,16 @@ dependencies:
   dio: ^5.8.0+1
   file_picker: ^9.0.2
   equatable: ^2.0.7
-  syncfusion_flutter_datagrid: ^23.2.7
+  syncfusion_flutter_datagrid: ^29.1.33
   shared_preferences: ^2.5.2
   decimal: ^3.0.2
   freezed_annotation: ^3.0.0
-  intl: ^0.19.0
   path: ^1.9.1
   collapsible_sidebar: ^2.0.7
   sidebarx: ^0.17.1
+  syncfusion_flutter_charts: ^29.1.33
+  intl: ^0.19.0
+  collection: ^1.19.1
 
 
 
@@ -35,6 +37,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  msix: ^3.16.8
 
 flutter:
   uses-material-design: true
@@ -53,3 +56,8 @@ flutter:
           weight: 700
 
 
+msix_config:
+  certificate_path: C:/Users/justinc/Documents/CERTIFICATE.pfx         # PFX证书文件路径
+  certificate_password: SJCsjc0315       # 证书密码（创建pfx时设置的导出密码）
+  logo_path: assets/images/icon.png       # 应用图标（建议至少256x256）
+  msix_version: 1.0.0.0
