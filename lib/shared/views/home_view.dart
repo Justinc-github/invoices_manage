@@ -17,7 +17,6 @@ import 'package:management_invoices/shared/views/dialog_view.dart';
 import 'package:management_invoices/features/help/views/help_view.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
-import 'package:management_invoices/features/home/views/home_content_view.dart';
 import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
 import 'package:management_invoices/features/invoice/views/invoice_upload_view.dart';
@@ -214,7 +213,7 @@ class _HomeViewState extends State<HomeView> {
     return [
       SidebarXItem(
         icon: material.Icons.home,
-        label: '首页',
+        label: '数据统计',
         onTap: () => _updateIndex(context, 0, false),
       ),
       SidebarXItem(
@@ -232,15 +231,11 @@ class _HomeViewState extends State<HomeView> {
         label: '所有成员',
         onTap: () => _updateIndex(context, 3, isUploading),
       ),
-      SidebarXItem(
-        icon: material.Icons.safety_check,
-        label: '数据汇总',
-        onTap: () => _updateIndex(context, 4, isUploading),
-      ),
+
       SidebarXItem(
         icon: material.Icons.help,
         label: '帮助',
-        onTap: () => _updateIndex(context, 5, false),
+        onTap: () => _updateIndex(context, 4, false),
       ),
     ];
   }
@@ -264,12 +259,12 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildBodyContent(int index, String otherId, String userName) {
     final invoiceSVM = context.read<InvoiceSelfViewModel>();
-    if (index == 1) {
+    if (index == 0) {
       invoiceSVM.invoiceSelf();
     }
     switch (index) {
       case 0:
-        return const HomeContentView();
+        return const InvoiceGatherView();
       case 1:
         return const InvoiceSelfView();
       case 2:
@@ -277,8 +272,6 @@ class _HomeViewState extends State<HomeView> {
       case 3:
         return const MembersAllView();
       case 4:
-        return InvoiceGatherView();
-      case 5:
         return const HelpView();
       case 6:
         return const MembersSelfTeamView();

@@ -41,20 +41,19 @@ class InvoiceUploadRepository {
     return 'https://fapiao.s3.bitiful.net/$encodedinvoiceUrl'; // 路径拼接
   }
 
-  // https://fapiao.s3.bitiful.net/images%2F2%2F%E6%B3%95%E5%85%B0%E8%9E%BA%E6%AF%8D-M4.jpg
-  // https://fapiao.s3.bitiful.net/images%2F2%2F%E6%B3%95%E5%85%B0%E8%9E%BA%E6%AF%8D-M4.jpg
   Future<void> uploadImage(File imageFile, int userId) async {
     try {
       final fileName = path.basename(imageFile.path); // 获取正确文件名
-      // print('文件路径: $imageFile.path');
       final formData = FormData.fromMap({
-        'user_id': userId.toString(),
         'file': await MultipartFile.fromFile(
           imageFile.path,
           filename: fileName,
         ),
       });
-      await _dio.post('http://47.95.171.19/upload', data: formData);
+      await _dio.post(
+        'http://47.95.171.19/upload?user_id=$userId',
+        data: formData,
+      );
     } on DioException catch (e) {
       // 明确捕获 Dio 异常
       throw Exception('上传到服务器失败: ${e.response?.data ?? e.message}');

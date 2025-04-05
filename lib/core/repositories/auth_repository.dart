@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
   final Dio _dio = Dio();
-  static const String _baseUrl = 'http://47.95.171.19';
+  static const String _baseUrl = 'http://127.0.0.1:8000';
   static const String _login = '/admin_invoice/user/login';
   static const String _register = '/register';
   static const String _sendCode = '/register/code';
