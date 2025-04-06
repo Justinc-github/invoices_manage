@@ -30,6 +30,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
   bool _isLoadingCharType = false;
 
   int get charType => _charType;
+  bool _hasFetchedInvoices = false;
   bool get isLoadingCharType => _isLoadingCharType;
   bool get isLoadingOther => _isLoadingOther;
   String get userName => _userName;
@@ -50,11 +51,18 @@ class InvoiceSelfViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // 修改发票加载状态
+  void setHasFetchedInvoices(bool value) {
+    _hasFetchedInvoices = value;
+    notifyListeners();
+  }
+
   Future<void> resetInvoice() async {
     _currentPage = 1;
     _itemsPerPage = 10;
     _totalItems = 0;
     _charType = 0;
+    _hasFetchedInvoices = false;
     _isLoadingCharType = false;
     _invoicesInfos = [];
     notifyListeners();
@@ -86,6 +94,11 @@ class InvoiceSelfViewModel with ChangeNotifier {
   }
 
   Future<void> invoiceSelf() async {
+    print(_hasFetchedInvoices);
+    if (_hasFetchedInvoices && _invoicesInfos.isNotEmpty) {
+      // 如果数据已经加载过，直接返回
+      return;
+    }
     if (_isLoading) return;
     _isLoading = true;
     _isLoadingCharType = true;
@@ -103,13 +116,13 @@ class InvoiceSelfViewModel with ChangeNotifier {
       final result = await _invoiceSelfRespositiory.invoiceInfoGet(
         userInfo['user_id'].toString(),
       );
-
       _invoicesInfos = result ?? [];
-      debugPrint(_invoicesInfos.toString());
+      debugPrint(_invoicesInfos.toString()); // 打印结果
       _totalItems = _invoicesInfos.length;
       _isLoading = false;
       notifyListeners();
       calculateTotalAmount();
+      _hasFetchedInvoices = true; // 标记数据已加载
     } catch (e) {
       debugPrint('Error fetching invoices: $e');
       _invoicesInfos = [];

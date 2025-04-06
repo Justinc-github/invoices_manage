@@ -9,6 +9,7 @@ class InvoiceModel extends Equatable {
   final String purchaserName;
   final String sellerName;
   final Decimal amountInFigures;
+  final String serviceType;
 
   const InvoiceModel({
     required this.id,
@@ -18,6 +19,7 @@ class InvoiceModel extends Equatable {
     required this.purchaserName,
     required this.sellerName,
     required this.amountInFigures,
+    required this.serviceType,
   });
 
   factory InvoiceModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class InvoiceModel extends Equatable {
       purchaserName: json['commodity_name'] as String,
       sellerName: json['seller_name'] as String,
       amountInFigures: Decimal.parse(json['amount_in_figures'].toString()),
+      serviceType: json['ServiceType'] as String,
     );
   }
 
@@ -41,5 +44,6 @@ class InvoiceModel extends Equatable {
     purchaserName,
     sellerName,
     amountInFigures,
+    serviceType,
   ];
 }

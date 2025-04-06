@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:path/path.dart' as path;
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';
@@ -83,12 +85,6 @@ class InvoiceUploadViewModel extends ChangeNotifier {
       final tempMessages = <String>[];
       for (final file in files) {
         try {
-          // final reasult1 = await _invoiceUploadRepository.uploadPDFToOSS(
-          //   file,
-          //   userId,
-          // );
-          // debugPrint('上传成功: $reasult1');
-
           final result2 = await _invoiceUploadRepository.submitPDFInvoiceInfo(
             file,
             userId,
@@ -119,7 +115,7 @@ class InvoiceUploadViewModel extends ChangeNotifier {
     if (e is DioException) {
       return e.response?.data?['error'] ?? e.message ?? '未知网络错误';
     }
-    return e.toString().replaceAll('Exception: ', ''); // 去除冗余信息
+    return e.toString().replaceAll('Exception: ', '');
   }
 
   void resetUploadStatus() {

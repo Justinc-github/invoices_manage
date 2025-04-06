@@ -71,7 +71,7 @@ class InvoiceUploadRepository {
         ),
       });
       await _dio.post(
-        'http://127.0.0.1:8000/upload?user_id=$userId&type=$type',
+        'http://47.95.171.19/upload?user_id=$userId&type=$type',
         data: formData,
       );
     } on DioException catch (e) {
@@ -103,7 +103,7 @@ class InvoiceUploadRepository {
         'file': await MultipartFile.fromFile(file.path, filename: fileName),
       });
       final response = await _dio.post(
-        'http://127.0.0.1:8000/admin_invoice/invoice_file?user_id=$userId',
+        'http://47.95.171.19/admin_invoice/invoice_file?user_id=$userId',
         data: formData,
       );
 

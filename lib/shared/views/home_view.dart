@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/features/invoice/views/invoice_consume_view.dart';
 
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -212,7 +213,7 @@ class _HomeViewState extends State<HomeView> {
   List<SidebarXItem> _sidebarItems(BuildContext context, bool isUploading) {
     return [
       SidebarXItem(
-        icon: material.Icons.home,
+        icon: material.Icons.dashboard,
         label: '数据统计',
         onTap: () => _updateIndex(context, 0, false),
       ),
@@ -233,9 +234,14 @@ class _HomeViewState extends State<HomeView> {
       ),
 
       SidebarXItem(
+        icon: material.Icons.credit_card,
+        label: '消费类型',
+        onTap: () => _updateIndex(context, 4, false),
+      ),
+      SidebarXItem(
         icon: material.Icons.help,
         label: '帮助',
-        onTap: () => _updateIndex(context, 4, false),
+        onTap: () => _updateIndex(context, 5, false),
       ),
     ];
   }
@@ -259,11 +265,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildBodyContent(int index, String otherId, String userName) {
     final invoiceSVM = context.read<InvoiceSelfViewModel>();
-    if (index == 0) {
-      invoiceSVM.invoiceSelf();
-    }
-    // print(index);
-    if (index == 1) {
+    if (index == 0 || index == 1 || index == 4) {
       invoiceSVM.invoiceSelf();
     }
     switch (index) {
@@ -276,6 +278,8 @@ class _HomeViewState extends State<HomeView> {
       case 3:
         return const MembersAllView();
       case 4:
+        return const InvoiceConsumeView();
+      case 5:
         return const HelpView();
       case 6:
         return const MembersSelfTeamView();

@@ -1,3 +1,4 @@
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/shared/utils/mouse_cursor.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -11,7 +12,7 @@ class InvoiceUploadView extends StatelessWidget {
   Widget build(BuildContext context) {
     final invoiceUploadViewModel = context.watch<InvoiceUploadViewModel>();
     final messages = invoiceUploadViewModel.messages;
-
+    final invoiceSelfViewModel = context.read<InvoiceSelfViewModel>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (messages.isNotEmpty) {
         final messagesCopy = List<String>.from(messages);
@@ -32,14 +33,20 @@ class InvoiceUploadView extends StatelessWidget {
               _buildUploadButton(
                 context: context,
                 label: '图片上传',
-                onPressed: invoiceUploadViewModel.uploadInvoice,
+                onPressed: () {
+                  invoiceSelfViewModel.setHasFetchedInvoices(false);
+                  invoiceUploadViewModel.uploadInvoice();
+                },
                 isActive: !invoiceUploadViewModel.isUploading,
               ),
               SizedBox(width: MediaQuery.of(context).size.width * 0.02),
               _buildUploadButton(
                 context: context,
                 label: '文件上传',
-                onPressed: invoiceUploadViewModel.uploadPDFInvoice,
+                onPressed: () {
+                  invoiceSelfViewModel.setHasFetchedInvoices(false);
+                  invoiceUploadViewModel.uploadPDFInvoice();
+                },
                 isActive: !invoiceUploadViewModel.isUploading,
               ),
             ],
