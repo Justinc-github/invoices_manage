@@ -42,7 +42,7 @@ class InvoiceOtherView extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        '当前登录用户名: $userName',
+                        '当前查看用户名: $userName',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

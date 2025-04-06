@@ -12,11 +12,6 @@ class InvoiceGatherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final invoiceSVM = context.watch<InvoiceSelfViewModel>();
-    if (!invoiceSVM.isLoadingCharType) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        invoiceSVM.invoiceSelf();
-      });
-    }
     // 对数据进行分组并计算每个日期的总金额
     final groupedData = groupBy(
       invoiceSVM.invoiceInfos,

@@ -39,8 +39,8 @@ class InvoiceUploadView extends StatelessWidget {
               _buildUploadButton(
                 context: context,
                 label: '文件上传',
-                onPressed: () {},
-                isActive: false,
+                onPressed: invoiceUploadViewModel.uploadPDFInvoice,
+                isActive: !invoiceUploadViewModel.isUploading,
               ),
             ],
           ),

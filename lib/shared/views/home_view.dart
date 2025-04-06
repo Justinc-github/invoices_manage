@@ -262,6 +262,10 @@ class _HomeViewState extends State<HomeView> {
     if (index == 0) {
       invoiceSVM.invoiceSelf();
     }
+    // print(index);
+    if (index == 1) {
+      invoiceSVM.invoiceSelf();
+    }
     switch (index) {
       case 0:
         return const InvoiceGatherView();

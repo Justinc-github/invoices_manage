@@ -66,6 +66,55 @@ class InvoiceUploadViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> uploadPDFInvoice() async {
+    try {
+      if (_isUploading) return;
+      _isUploading = true;
+      notifyListeners();
+      final files = await _invoiceUploadRepository.pickPDFFiles();
+      if (files == null || files.isEmpty) {
+        _isUploading = false;
+        notifyListeners();
+        return;
+      }
+      final prefs = await SharedPreferences.getInstance();
+      final userInfo = jsonDecode(prefs.getString('userInfo')!);
+      final userId = userInfo['user_id'] as int; // 明确类型转换
+      final tempMessages = <String>[];
+      for (final file in files) {
+        try {
+          // final reasult1 = await _invoiceUploadRepository.uploadPDFToOSS(
+          //   file,
+          //   userId,
+          // );
+          // debugPrint('上传成功: $reasult1');
+
+          final result2 = await _invoiceUploadRepository.submitPDFInvoiceInfo(
+            file,
+            userId,
+          );
+
+          debugPrint('发票存储成功: $result2');
+          tempMessages.add('✅ ${path.basename(file.path)} 上传成功: $result2');
+          successCount++;
+        } catch (e) {
+          debugPrint(_getErrorMessage(e));
+          tempMessages.add(
+            '❌ ${path.basename(file.path)} 上传失败: 发票已存在',
+          ); // 显示具体错误
+        }
+        notifyListeners();
+      }
+      _messages.addAll(tempMessages);
+      _isUploaded = true;
+    } catch (e) {
+      _messages.add('🚨 系统错误: ${_getErrorMessage(e)}');
+    } finally {
+      _isUploading = false;
+      notifyListeners();
+    }
+  }
+
   String _getErrorMessage(dynamic e) {
     if (e is DioException) {
       return e.response?.data?['error'] ?? e.message ?? '未知网络错误';
