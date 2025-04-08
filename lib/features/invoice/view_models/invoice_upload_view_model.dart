@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:path/path.dart' as path;
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_upload_respositiory.dart';

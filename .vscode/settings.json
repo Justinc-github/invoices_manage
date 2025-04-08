@@ -1,0 +1,8 @@
+{
+    "yaml.schemas": {
+        "file:///c%3A/Users/justinc/.vscode/extensions/davidanson.vscode-markdownlint-0.59.0/markdownlint-cli2-config-schema.json": "file:///c%3A/Users/justinc/Desktop/invoices_manage/windows/packaging/exe/make_config.yaml"
+    },
+    "marscode.codeCompletionPro": {
+        "enableCodeCompletionPro": true
+    }
+}

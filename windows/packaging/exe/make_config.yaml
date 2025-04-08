@@ -1,0 +1,8 @@
+app_id: 2743281f-8ba5-4f6e-a8ef-af62b008a7a0
+publisher: justinc
+display_name: 发票管理系统
+setup_icon_file: windows/runner/resources/app_icon.ico
+create_desktop_icon: true
+install_dir_name: invoice_manager
+locales:
+  - zh

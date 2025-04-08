@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: "none"
 
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.7.0
@@ -17,7 +17,7 @@ dependencies:
   window_manager: ^0.4.3
   provider: ^6.1.2
   dio: ^5.8.0+1
-  file_picker: ^9.0.2
+  file_picker: ^10.0.0
   equatable: ^2.0.7
   syncfusion_flutter_datagrid: ^29.1.33
   shared_preferences: ^2.5.2
@@ -29,6 +29,7 @@ dependencies:
   syncfusion_flutter_charts: ^29.1.33
   intl: ^0.19.0
   collection: ^1.19.1
+  auto_updater: ^1.0.0
 
 
 
@@ -54,11 +55,3 @@ flutter:
           weight: 300
         - asset: assets/fonts/MSYHBD.TTC
           weight: 700
-
-
-msix_config:
-  msix_name: 发票管理系统            # 应用名称
-  certificate_path: C:/Users/justinc/Documents/CERTIFICATE.pfx         # PFX证书文件路径
-  certificate_password: SJCsjc0315       # 证书密码（创建pfx时设置的导出密码）
-  logo_path: assets/images/icon.png       # 应用图标（建议至少256x256）
-  msix_version: 1.0.0.0

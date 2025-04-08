@@ -94,7 +94,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
   }
 
   Future<void> invoiceSelf() async {
-    print(_hasFetchedInvoices);
+    debugPrint(_hasFetchedInvoices.toString()); // 打印是否已加载数据
     if (_hasFetchedInvoices && _invoicesInfos.isNotEmpty) {
       // 如果数据已经加载过，直接返回
       return;
