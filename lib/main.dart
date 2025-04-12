@@ -1,13 +1,13 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:management_invoices/core/config/apps_themes.dart';
 import 'package:management_invoices/core/config/apps_providers.dart';
+import 'package:management_invoices/core/config/window_manage.dart';
 import 'package:management_invoices/shared/views/home_view.dart';
 import 'package:auto_updater/auto_updater.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await windowsinItialization();
-
+  autoUpdater.addListener(MyUpdaterListener());
   String feedURL = 'http://47.95.171.19/appcast.xml';
 
   // 确保 autoUpdater 的调用在主线程上

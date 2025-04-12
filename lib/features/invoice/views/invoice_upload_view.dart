@@ -13,6 +13,7 @@ class InvoiceUploadView extends StatelessWidget {
     final invoiceUploadViewModel = context.watch<InvoiceUploadViewModel>();
     final messages = invoiceUploadViewModel.messages;
     final invoiceSelfViewModel = context.read<InvoiceSelfViewModel>();
+    final theme = FluentTheme.of(context); // 获取当前主题
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (messages.isNotEmpty) {
         final messagesCopy = List<String>.from(messages);
@@ -21,12 +22,81 @@ class InvoiceUploadView extends StatelessWidget {
       }
     });
 
+    final color =
+        theme.brightness == Brightness.dark
+            ? Colors
+                .white // 深色模式下图标为白色
+            : Colors.black; // 浅色模式下图标为黑色
+
     return Stack(
       children: [
         Positioned(
+          top: MediaQuery.of(context).size.width * 0.05,
+          bottom: MediaQuery.of(context).size.width * 0.01,
+          right: 100,
+          child: Row(
+            children: [
+              // 第一列
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end, // 设置列内对齐方式为尾部对齐
+                children: [
+                  //invoice_type
+                  _inputBox(color: color, label: '发票类型', tip: '请输入属于哪种发票'),
+                  //invoice_num
+                  _inputBox(color: color, label: '发票号码', tip: '请输入发票号码'),
+                  // invoice_date
+                  _inputBox(color: color, label: '开票日期', tip: '请输入开票日期'),
+                  //purchaser_name
+                  _inputBox(color: color, label: '买方名称', tip: '请输入购买方名称'),
+                  //purchaser_register_num
+                  _inputBox(color: color, label: '买方税号', tip: '请输入购买方税号'),
+                  // seller_name
+                  _inputBox(color: color, label: '卖方名称', tip: '请输入销售方名称'),
+                ],
+              ),
+              SizedBox(width: 20),
+              // 第二列
+              Column(
+                children: [
+                  //seller_register_num
+                  _inputBox(color: color, label: '卖方税号', tip: '请输入发票抬头'),
+                  //commodity_name
+                  _inputBox(color: color, label: '物品名称', tip: '请输入购置物品名称'),
+                  //commodity_type
+                  _inputBox(color: color, label: '发票类型', tip: '请输入购置物品类型'),
+                  // commodity_unit
+                  _inputBox(color: color, label: '物品数量', tip: '请输入购置数量'),
+                  // commodity_unit
+                  _inputBox(color: color, label: '数量单位', tip: '请输入购置物品数量单位'),
+                  //commodity_price
+                  _inputBox(color: color, label: '物品单价', tip: '请输入购置物品单价'),
+                ],
+              ),
+              SizedBox(width: 20),
+              // 第三列
+              Column(
+                children: [
+                  // commodity_tax_rate
+                  _inputBox(color: color, label: '物品税率', tip: '请输入购置物品税率'),
+                  // commodity_tax
+                  _inputBox(color: color, label: '物品税额', tip: '请输入购置物品税额'),
+                  //commodity_amount
+                  _inputBox(color: color, label: '物品金额', tip: '请输入购置物品金额'),
+                  //ServiceType
+                  _inputBox(color: color, label: '消费类型', tip: '请输入消费类型'),
+                  // amount_in_figures
+                  _inputBox(color: color, label: '合计金额', tip: '请输入物品合计金额'),
+                  // amount_in_words
+                  _inputBox(color: color, label: '金额大写', tip: '物品金额大写（可忽略）'),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
           bottom: 20,
-          left: 0,
-          right: 0,
+
+          right: 470,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -63,8 +133,8 @@ class InvoiceUploadView extends StatelessWidget {
     required bool isActive,
   }) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.09,
-      height: MediaQuery.of(context).size.width * 0.035,
+      width: 130,
+      height: 45,
       child: MouseRegion(
         cursor:
             isActive ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
@@ -86,6 +156,34 @@ class InvoiceUploadView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _inputBox({
+    required Color color,
+    required String label,
+    required String tip,
+  }) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              '$label：',
+              style: TextStyle(fontSize: 20, color: color, fontFamily: "MSYH"),
+            ),
+            SizedBox(
+              height: 40,
+              width: 200,
+              child: TextBox(
+                placeholder: tip,
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 50),
+      ],
     );
   }
 
