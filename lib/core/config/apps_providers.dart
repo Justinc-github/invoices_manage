@@ -10,7 +10,6 @@ import 'package:management_invoices/core/repositories/invoice_repository/invoice
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/shared/view_models/avatar_view_model.dart';
 import 'package:management_invoices/features/auth/view_models/auth_view_model.dart';
-import 'package:management_invoices/features/help/view_models/help_view_model.dart';
 import 'package:management_invoices/features/members/view_models/members_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
@@ -66,7 +65,6 @@ class AppProviders extends StatelessWidget {
               (context) => MembersViewModel(context.read<MembersRepository>()),
         ),
         ChangeNotifierProvider(create: (_) => HomeViewModel()),
-        ChangeNotifierProvider(create: (_) => HelpViewModel()),
       ],
       child: child,
     );

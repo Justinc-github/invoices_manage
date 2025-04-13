@@ -21,6 +21,27 @@ class InvoiceUploadRepository {
     );
   }
 
+  Future<Response> submitHandInvoiceInfo(
+    Map<String, dynamic> invoiceData,
+    int userId,
+  ) async {
+    try {
+      final String url =
+          'http://47.95.171.19/admin_invoice/invoice_hand_info?userId=$userId';
+      final response = await _dio.post(
+        url,
+        data: invoiceData, // 直接发送发票数据，不再嵌套
+        options: Options(
+          headers: {'Content-Type': 'application/json'},
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+      return response;
+    } catch (e) {
+      throw Exception('网络请求失败: ${e.toString()}');
+    }
+  }
+
   Future<List<File>?> pickFiles() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.image,

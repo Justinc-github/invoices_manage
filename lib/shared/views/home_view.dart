@@ -15,7 +15,6 @@ import 'package:management_invoices/features/invoice/view_models/invoice_self_vi
 import 'package:management_invoices/features/invoice/view_models/invoice_upload_view_model.dart';
 
 import 'package:management_invoices/shared/views/dialog_view.dart';
-import 'package:management_invoices/features/help/views/help_view.dart';
 import 'package:management_invoices/features/auth/views/login_view.dart';
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
 import 'package:management_invoices/features/invoice/views/invoice_self_view.dart';
@@ -238,11 +237,6 @@ class _HomeViewState extends State<HomeView> {
         label: '消费类型',
         onTap: () => _updateIndex(context, 4, false),
       ),
-      SidebarXItem(
-        icon: material.Icons.help,
-        label: '帮助',
-        onTap: () => _updateIndex(context, 5, false),
-      ),
     ];
   }
 
@@ -274,13 +268,11 @@ class _HomeViewState extends State<HomeView> {
       case 1:
         return const InvoiceSelfView();
       case 2:
-        return const InvoiceUploadView();
+        return InvoiceUploadView();
       case 3:
         return const MembersAllView();
       case 4:
         return const InvoiceConsumeView();
-      case 5:
-        return const HelpView();
       case 6:
         return const MembersSelfTeamView();
       case 7:
