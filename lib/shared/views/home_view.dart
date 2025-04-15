@@ -70,32 +70,48 @@ class _HomeViewState extends State<HomeView> {
       key: _scaffoldKey,
       backgroundColor:
           FluentTheme.of(context).scaffoldBackgroundColor, // 动态背景颜色
-      body: Column(
+      body: Stack(
         children: [
-          SizedBox(
-            height: 68,
-            child: TitleBarView(
-              onThemeToggle: widget.onThemeToggle, // 传递回调
-            ),
+          Column(
+            children: [
+              SizedBox(
+                height: 68,
+                child: TitleBarView(
+                  onThemeToggle: widget.onThemeToggle, // 传递回调
+                ),
+              ),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Row(
+                      children: [
+                        _buildSidebar(context, isUploading),
+                        Expanded(
+                          child: _buildBodyContent(
+                            _controller.selectedIndex,
+                            invoiceSVM.otherId.toString(),
+                            invoiceSVM.userName.toString(),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Row(
-                  children: [
-                    _buildSidebar(context, isUploading),
-                    Expanded(
-                      child: _buildBodyContent(
-                        _controller.selectedIndex,
-                        invoiceSVM.otherId.toString(),
-                        invoiceSVM.userName.toString(),
-                      ),
-                    ),
-                  ],
-                );
-              },
+          // 如果正在上传，显示加载图标覆盖整个页面
+          if (isUploading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withValues(alpha: 0.5), // 半透明背景
+                child: Center(
+                  child: material.CircularProgressIndicator(
+                    color: FluentTheme.of(context).accentColor,
+                  ),
+                ),
+              ),
             ),
-          ),
         ],
       ),
     );

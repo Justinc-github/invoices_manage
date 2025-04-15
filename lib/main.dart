@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return FluentApp(
-      title: '发票管理系统',
+      title: '票据管理系统',
       theme: AppThemes.getTheme(isDarkMode), // 动态绑定主题
       debugShowCheckedModeBanner: false,
       home: HomeView(

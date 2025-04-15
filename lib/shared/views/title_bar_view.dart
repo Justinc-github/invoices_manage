@@ -43,7 +43,7 @@ class TitleBarView extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 16),
                         alignment: Alignment.centerLeft,
                         child: const Text(
-                          '发票管理系统',
+                          '票据管理系统',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

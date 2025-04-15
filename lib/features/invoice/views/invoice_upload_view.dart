@@ -29,7 +29,6 @@ class InvoiceUploadView extends StatelessWidget {
             ? Colors
                 .white // 深色模式下图标为白色
             : Colors.black; // 浅色模式下图标为黑色
-
     return Stack(
       children: [
         Positioned(
@@ -280,7 +279,7 @@ class InvoiceUploadView extends StatelessWidget {
                     _showValidationError(context);
                   }
                 },
-                isActive: true,
+                isActive: !invoiceUploadViewModel.isUploading,
               ),
             ],
           ),
