@@ -38,7 +38,6 @@ class InvoiceSelfViewModel with ChangeNotifier {
   List<InvoiceModel> get invoicesOtherInfos => _invoicesOtherInfos;
   bool get isLoading => _isLoading;
   Decimal get totalAmount => _totalAmount;
-  Decimal get totalOtherAmount => _totalOtherAmount;
   int get currentPage => _currentPage;
   String get otherId => _otherId;
   int get itemsPerPage => _itemsPerPage;
@@ -76,7 +75,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
   }
 
   void calculateOtherTotalAmount() {
-    _totalOtherAmount = _invoicesOtherInfos.fold<Decimal>(
+    _totalAmount = _invoicesOtherInfos.fold<Decimal>(
       Decimal.zero,
       (sum, item) => sum + item.amountInFigures,
     );
@@ -140,7 +139,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
       _invoicesOtherInfos = [];
       final result = await _invoiceSelfRespositiory.invoiceInfoGet(userId);
       _invoicesOtherInfos = result ?? [];
-      debugPrint(_invoicesOtherInfos.toString());
+      // debugPrint(_invoicesOtherInfos.toString());
       _totalItems = _invoicesOtherInfos.length;
       _isLoading = false;
       notifyListeners();
