@@ -15,7 +15,6 @@ class InvoiceSelfViewModel with ChangeNotifier {
   bool _isLoading = false; // 新增加载状态
   bool _isLoadingOther = false; // 新增加载状态
   Decimal _totalAmount = Decimal.zero; // 存储发票的总金额
-  Decimal _totalOtherAmount = Decimal.zero; // 存储发票的总金额
 
   // 分页相关状态
   List<InvoiceModel> _invoicesInfos = [];
@@ -116,7 +115,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
         userInfo['user_id'].toString(),
       );
       _invoicesInfos = result ?? [];
-      debugPrint(_invoicesInfos.toString()); // 打印结果
+      // debugPrint(_invoicesInfos.toString()); // 打印结果
       _totalItems = _invoicesInfos.length;
       _isLoading = false;
       notifyListeners();

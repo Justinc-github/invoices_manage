@@ -66,20 +66,18 @@ class InvoiceUploadRepository {
 
   Future<String> uploadToOSS(File file, int userId) async {
     final fileName = path.basename(file.path); // 获取正确文件名
-    final invoiceUrl = 'images/$userId/$fileName';
-    final encodedinvoiceUrl = Uri.encodeComponent(invoiceUrl); // 新增编码步骤
+    final encodedinvoiceUrl = Uri.encodeComponent(fileName); // 文件编码
     await uploadFile(file, userId, 'images');
 
-    return 'https://fapiao.s3.bitiful.net/$encodedinvoiceUrl'; // 路径拼接
+    return 'https://fapiao-1355161607.cos.ap-beijing.myqcloud.com/images/$userId/$encodedinvoiceUrl'; // 路径拼接
   }
 
   Future<String> uploadPDFToOSS(File file, int userId) async {
     final fileName = path.basename(file.path); // 获取正确文件名
-    final invoiceUrl = 'PDF/$userId/$fileName';
-    final encodedinvoiceUrl = Uri.encodeComponent(invoiceUrl); // 新增编码步骤
+    final encodedinvoiceUrl = Uri.encodeComponent(fileName); // 新增编码步骤
     await uploadFile(file, userId, 'PDF');
 
-    return 'https://fapiao.s3.bitiful.net/$encodedinvoiceUrl'; // 路径拼接
+    return 'https://fapiao-1355161607.cos.ap-beijing.myqcloud.com/PDF/$userId/$encodedinvoiceUrl'; // 路径拼接
   }
 
   Future<void> uploadFile(File imageFile, int userId, String type) async {
@@ -123,6 +121,8 @@ class InvoiceUploadRepository {
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(file.path, filename: fileName),
       });
+
+      await uploadPDFToOSS(file, userId); // 上传文件到OSS
       final response = await _dio.post(
         'http://47.95.171.19/admin_invoice/invoice_file?user_id=$userId',
         data: formData,
