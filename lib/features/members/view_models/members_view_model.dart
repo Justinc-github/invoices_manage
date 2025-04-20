@@ -8,6 +8,9 @@ class MembersViewModel extends ChangeNotifier {
   final MembersRepository _membersRepository;
   MembersViewModel(this._membersRepository);
 
+  final teamNameController = TextEditingController();
+  final userIdController = TextEditingController();
+
   bool _isLoading = false;
   bool _isLoaded = false;
   List<AuthInfoModel> _membersInfos = [];
@@ -37,6 +40,66 @@ class MembersViewModel extends ChangeNotifier {
   int get itemsPerPage => _itemsPerPage;
   int get totalItems => _totalItems;
   int get totalPages => (_totalItems / _itemsPerPage).ceil();
+
+  List _teams = [];
+  List get teams => _teams;
+  String _errorMessage = '';
+
+  String get errorMessage => _errorMessage;
+
+  Future<void> teamAllInfosGet() async {
+    try {
+      _isLoading = true;
+      _teams = await _membersRepository.teamSelfMumbersGet();
+      // debugPrint(_teams.toString());
+      _errorMessage = '';
+    } catch (e) {
+      _errorMessage = '数据加载失败: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 创建新的队伍
+  Future<void> teamCreate(String userId, String teamName) async {
+    try {
+      _isLoading = true;
+      await _membersRepository.teamCreate(userId, teamName);
+    } catch (e) {
+      _errorMessage = '队伍创建失败: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 删除队伍
+  Future<void> teamDelete(String teamId) async {
+    try {
+      _isLoading = true;
+      await _membersRepository.teamDelete(teamId);
+    } catch (e) {
+      _errorMessage = '队伍创建失败: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // 编辑队伍
+  Future<void> teamUpload(String teamId, String teamName) async {
+    try {
+      _isLoading = true;
+      await _membersRepository.teamUpload(teamId, teamName);
+    } catch (e) {
+      _errorMessage = '队伍编辑失败: ${e.toString()}';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // 分页数据
   List<AuthInfoModel> get paginatedData {
     final start = (_currentPage - 1) * _itemsPerPage;

@@ -54,6 +54,33 @@ class TeamMember extends Equatable {
   List<Object?> get props => [userId, role, userName, avatar];
 }
 
+// models/team_model.dart
+class Team {
+  final int id;
+  final String name;
+  final String? headmanName;
+  final List<TeamMember> members;
+
+  Team({
+    required this.id,
+    required this.name,
+    this.headmanName,
+    required this.members,
+  });
+
+  factory Team.fromJson(Map<String, dynamic> json) {
+    return Team(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      headmanName: json['headman_name'] as String?,
+      members:
+          (json['members'] as List)
+              .map((member) => TeamMember.fromJson(member))
+              .toList(),
+    );
+  }
+}
+
 class TeamUserIdsModel extends Equatable {
   final int? teamId;
   final int? captainId;

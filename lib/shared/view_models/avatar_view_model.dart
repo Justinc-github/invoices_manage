@@ -11,6 +11,7 @@ class AvatarViewModel extends ChangeNotifier {
   AvatarViewModel(this._avatarRepository) {
     _prefs.avatarNotifier.addListener(_handleAvatarChange);
     avatarUrlGet(); // 自动加载头像
+    getUserRole(); // 自动加载用户角色
   }
 
   String? _avatarUser;
@@ -21,6 +22,20 @@ class AvatarViewModel extends ChangeNotifier {
   String? get avatarUser => _avatarUser;
   String? get error => _error;
   bool get isLoading => _isLoading; // 暴露加载状态
+
+  String? _role;
+  String? get role => _role; // 获取用户角色
+
+  Future<void> getUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    _role = prefs
+        .getString('role')
+        ?.replaceAll(RegExp(r'[^a-zA-Z]'), ''); // 只保留字母; // 去掉多余空格
+    // debugPrint('用户角色${_role.toString()}');
+    // final test = _role == 'admin';
+    // debugPrint('是否符合${test.toString()}');
+    notifyListeners(); // 通知 UI 更新
+  }
 
   Future<void> avatarUrlGet() async {
     final prefs = await SharedPreferences.getInstance();

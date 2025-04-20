@@ -17,6 +17,7 @@ class AvatarView extends StatelessWidget {
     final auth = context.watch<AuthViewModel>();
     final home = context.watch<HomeViewModel>();
     final theme = FluentTheme.of(context);
+
     return Positioned(
       right: 190,
       top: 6,
@@ -32,7 +33,9 @@ class AvatarView extends StatelessWidget {
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
-              onTap: () => avatarViewModel.uploadAvatar(),
+              onTap: () async {
+                await avatarViewModel.uploadAvatar();
+              },
               child: CircleAvatar(
                 radius: 20,
                 backgroundImage:
@@ -52,53 +55,66 @@ class AvatarView extends StatelessWidget {
                 theme.brightness == Brightness.dark
                     ? Colors.green['dark']
                     : Colors.white.withAlpha(150),
-
+            onOpened: () => {avatarViewModel.getUserRole()},
             offset: const Offset(0, 50), // 向下偏移 50 像素
-            itemBuilder:
-                (BuildContext context) => <material.PopupMenuEntry<String>>[
-                  // 修改 AvatarView 中的 PopupMenuItem
+            itemBuilder: (BuildContext context) {
+              return <material.PopupMenuEntry<String>>[
+                material.PopupMenuItem<String>(
+                  height: 20.0,
+                  value: 'team_self',
+                  child: const _MenuListTile(
+                    icon: material.Icons.telegram,
+                    color: material.Colors.yellowAccent,
+                    title: '我的队伍',
+                  ),
+                  onTap: () {
+                    home.updateSelectedIndex(6);
+                  },
+                ),
+                if (avatarViewModel.role == "admin") // 仅当角色为 admin 时显示队伍管理选项
                   material.PopupMenuItem<String>(
                     height: 20.0,
-                    value: 'team_self',
+                    value: 'team_admin',
                     child: const _MenuListTile(
-                      icon: material.Icons.telegram,
-                      color: material.Colors.yellowAccent,
-                      title: '我的队伍',
+                      icon: material.Icons.manage_accounts,
+                      color: material.Colors.blueAccent,
+                      title: '队伍管理',
                     ),
                     onTap: () {
-                      home.updateSelectedIndex(6);
+                      home.updateSelectedIndex(5);
                     },
                   ),
-                  material.PopupMenuItem<String>(
-                    height: 20.0,
-                    value: 'help',
-                    child: const _MenuListTile(
-                      icon: material.Icons.help,
-                      color: material.Colors.lightGreen,
-                      title: '帮助内容',
-                    ),
-                    onTap: () async {
-                      final url = Uri.parse(
-                        "https://www.yuque.com/justinc_/vx3nqa/ow1cg02vaaf1t8ru?singleDoc#%20%E3%80%8A%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E3%80%8B",
-                      );
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url);
-                      } else {
-                        throw '无法打开链接: $url';
-                      }
-                    },
+                material.PopupMenuItem<String>(
+                  height: 20.0,
+                  value: 'help',
+                  child: const _MenuListTile(
+                    icon: material.Icons.help,
+                    color: material.Colors.lightGreen,
+                    title: '帮助内容',
                   ),
-                  material.PopupMenuItem<String>(
-                    height: 20.0,
-                    value: 'Logout',
-                    child: const _MenuListTile(
-                      icon: material.Icons.logout,
-                      color: material.Colors.red,
-                      title: '退出登录',
-                    ),
-                    onTap: () => auth.logout(context),
+                  onTap: () async {
+                    final url = Uri.parse(
+                      "https://www.yuque.com/justinc_/vx3nqa/ow1cg02vaaf1t8ru?singleDoc#%20%E3%80%8A%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3%E3%80%8B",
+                    );
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      throw '无法打开链接: $url';
+                    }
+                  },
+                ),
+                material.PopupMenuItem<String>(
+                  height: 20.0,
+                  value: 'Logout',
+                  child: const _MenuListTile(
+                    icon: material.Icons.logout,
+                    color: material.Colors.red,
+                    title: '退出登录',
                   ),
-                ],
+                  onTap: () => auth.logout(context),
+                ),
+              ];
+            },
           ),
         ],
       ),

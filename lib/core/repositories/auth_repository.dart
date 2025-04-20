@@ -36,6 +36,7 @@ class AuthRepository {
         prefs.setString('username', jsonEncode(responseData['username']));
         prefs.setString('avatar', responseData['avatar']);
         prefs.setString('message', jsonEncode(responseData['message']));
+        prefs.setString('role', jsonEncode(responseData['role']));
         // 调试输出
         debugPrint('Stored UserID: ${prefs.getString('user_id')}');
         return (true, message);

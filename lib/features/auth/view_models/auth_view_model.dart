@@ -281,7 +281,7 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     _isLoggedIn = prefs.getString('auth_token') != null;
-    debugPrint('登录状态$isLoggedIn'.toString());
+    // debugPrint('登录状态$isLoggedIn'.toString());
     notifyListeners();
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' as material;
 import 'package:management_invoices/features/invoice/views/invoice_consume_view.dart';
+import 'package:management_invoices/features/members/view_models/members_view_model.dart';
+import 'package:management_invoices/features/members/views/team_admin_view.dart';
 
 import 'package:provider/provider.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -275,9 +277,14 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildBodyContent(int index, String otherId, String userName) {
     final invoiceSVM = context.read<InvoiceSelfViewModel>();
+    final memberVM = context.read<MembersViewModel>();
     if (index == 0 || index == 1 || index == 4) {
       invoiceSVM.invoiceSelf();
     }
+    if (index == 5) {
+      memberVM.teamAllInfosGet();
+    }
+
     switch (index) {
       case 0:
         return const InvoiceGatherView();
@@ -289,6 +296,8 @@ class _HomeViewState extends State<HomeView> {
         return const MembersAllView();
       case 4:
         return const InvoiceConsumeView();
+      case 5:
+        return const TeamAdminView();
       case 6:
         return const MembersSelfTeamView();
       case 7:
