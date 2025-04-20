@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:decimal/decimal.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:management_invoices/core/repositories/invoice_repository/invoice_self_respositiory.dart';
 
 import 'package:management_invoices/core/models/invoice_self_model.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xlsio;
 
 class InvoiceSelfViewModel with ChangeNotifier {
   final InvoiceSelfRespositiory _invoiceSelfRespositiory;
@@ -127,6 +131,58 @@ class InvoiceSelfViewModel with ChangeNotifier {
       _totalAmount = Decimal.zero;
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> generateReport(
+    BuildContext context,
+    List<InvoiceModel> invoices,
+  ) async {
+    final workbook = xlsio.Workbook();
+    final sheet = workbook.worksheets[0];
+
+    final headers = ['发票ID', '发票类型', '开票日期', '购买物品', '销售者', '金额'];
+    for (int i = 0; i < headers.length; i++) {
+      sheet.getRangeByIndex(1, i + 1).setText(headers[i]);
+    }
+
+    for (int i = 0; i < invoices.length; i++) {
+      final invoice = invoices[i];
+      sheet.getRangeByIndex(i + 2, 1).setText(invoice.invoiceNum);
+      sheet.getRangeByIndex(i + 2, 2).setText(invoice.invoiceType);
+      sheet.getRangeByIndex(i + 2, 3).setText(invoice.invoiceDate);
+      sheet.getRangeByIndex(i + 2, 4).setText(invoice.purchaserName);
+      sheet.getRangeByIndex(i + 2, 5).setText(invoice.sellerName);
+      sheet
+          .getRangeByIndex(i + 2, 6)
+          .setNumber(double.parse(invoice.amountInFigures.toString()));
+    }
+
+    final bytes = workbook.saveAsStream();
+    workbook.dispose();
+
+    final path = await FilePicker.platform.saveFile(
+      dialogTitle: '保存报表',
+      fileName: '发票报表.xlsx',
+    );
+
+    if (path != null) {
+      final file = File(path);
+      await file.writeAsBytes(bytes, flush: true);
+      showDialog(
+        context: context,
+        builder:
+            (_) => ContentDialog(
+              title: const Text('报表生成成功'),
+              content: const Text('报表已成功保存到指定位置。'),
+              actions: [
+                FilledButton(
+                  child: const Text('确定'),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+      );
     }
   }
 

@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "7dcbd0f87fe5f61cb28da39a1a8b70dbc106e2fe0516f7836eb7bb2948481a12"
+      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.0.5"
+    version: "3.6.1"
   args:
     dependency: transitive
     description:
@@ -273,10 +273,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "4e973fcf4caae1a4be2fa0a13157aa38a8f9cb049db6529aa00b4d71abc4d928"
+      sha256: f31d52537dc417fdcde36088fdf11d191026fd5e4fae742491ebd40e5a8bea7d
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.5.4"
+    version: "4.3.0"
   intl:
     dependency: "direct main"
     description:
@@ -285,6 +285,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.19.0"
+  jiffy:
+    dependency: transitive
+    description:
+      name: jiffy
+      sha256: "1c1b86459969ff9f32dc5b0ffe392f1e08181e66396cf9dd8fa7c90552a691af"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "6.3.2"
   json_annotation:
     dependency: transitive
     description:
@@ -437,14 +445,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.8"
-  posix:
-    dependency: transitive
-    description:
-      name: posix
-      sha256: a0117dc2167805aa9125b82eee515cc891819bac2f538c83646d355b16f58b9a
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "6.0.1"
   provider:
     dependency: "direct main"
     description:
@@ -638,10 +638,10 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: f56ee689d572c86a0d96cc986120a1e81a9cee9ff6d3c33acb030766a2ad1c04
+      sha256: "98580db6186b46aae965d3f480f7830b0ee6f58c4e1bbbb3fb3de6a121f61836"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "29.1.33"
+    version: "29.1.38"
   syncfusion_flutter_datagrid:
     dependency: "direct main"
     description:
@@ -650,6 +650,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "29.1.33"
+  syncfusion_flutter_xlsio:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_xlsio
+      sha256: "667484a53502fc82ffe0bc739776f96233ec15430450704ce114fec9878b7592"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "29.1.38"
+  syncfusion_officecore:
+    dependency: transitive
+    description:
+      name: syncfusion_officecore
+      sha256: c5c8b8bfea4359cbb7f917bd479405f06820e41beb4cfdcc691bc06659ba2171
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "29.1.38"
   term_glyph:
     dependency: transitive
     description:

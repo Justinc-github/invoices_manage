@@ -32,6 +32,7 @@ dependencies:
   collection: ^1.19.1
   auto_updater: ^1.0.0
   url_launcher: ^6.3.1
+  syncfusion_flutter_xlsio: ^29.1.38
 
 
 

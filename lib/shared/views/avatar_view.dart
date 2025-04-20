@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' as material;
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:management_invoices/shared/view_models/home_view_model.dart';
 
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class AvatarView extends StatelessWidget {
     final avatarViewModel = context.watch<AvatarViewModel>();
     final auth = context.watch<AuthViewModel>();
     final home = context.watch<HomeViewModel>();
+    final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
     final theme = FluentTheme.of(context);
 
     return Positioned(
@@ -71,6 +73,22 @@ class AvatarView extends StatelessWidget {
                     home.updateSelectedIndex(6);
                   },
                 ),
+                if (home.selectedIndex == 1)
+                  material.PopupMenuItem<String>(
+                    height: 20.0,
+                    value: 'export_report',
+                    child: const _MenuListTile(
+                      icon: material.Icons.file_download,
+                      color: material.Colors.purpleAccent,
+                      title: '导出报表',
+                    ),
+                    onTap: () {
+                      invoiceSelfViewModel.generateReport(
+                        context,
+                        invoiceSelfViewModel.paginatedData,
+                      );
+                    },
+                  ),
                 if (avatarViewModel.role == "admin") // 仅当角色为 admin 时显示队伍管理选项
                   material.PopupMenuItem<String>(
                     height: 20.0,
