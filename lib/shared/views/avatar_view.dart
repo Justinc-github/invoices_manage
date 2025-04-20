@@ -83,10 +83,7 @@ class AvatarView extends StatelessWidget {
                       title: '导出报表',
                     ),
                     onTap: () {
-                      invoiceSelfViewModel.generateReport(
-                        context,
-                        invoiceSelfViewModel.paginatedData,
-                      );
+                      invoiceSelfViewModel.generateReport(context);
                     },
                   ),
                 if (avatarViewModel.role == "admin") // 仅当角色为 admin 时显示队伍管理选项

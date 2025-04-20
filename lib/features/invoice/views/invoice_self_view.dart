@@ -1,10 +1,11 @@
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart' show PopupMenuButton, PopupMenuItem;
+import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import 'package:management_invoices/core/models/invoice_self_model.dart';
-import 'package:management_invoices/features/invoice/view_models/invoice_self_view_model.dart';
 
 class InvoiceSelfView extends StatelessWidget {
   const InvoiceSelfView({super.key});
@@ -12,7 +13,9 @@ class InvoiceSelfView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final invoiceSelfViewModel = context.watch<InvoiceSelfViewModel>();
-
+    if (invoiceSelfViewModel.isLoading) {
+      return const Center(child: ProgressRing());
+    }
     return SizedBox(
       width: double.infinity,
       height: double.infinity,
@@ -43,7 +46,7 @@ class InvoiceSelfView extends StatelessWidget {
                     columns: [
                       GridColumn(
                         columnName: 'invoiceNum',
-                        label: _buildHeader(context, '发票ID'),
+                        label: _buildHeader(context, '发票税号'),
                       ),
                       GridColumn(
                         columnName: 'invoiceType',
@@ -64,6 +67,10 @@ class InvoiceSelfView extends StatelessWidget {
                       GridColumn(
                         columnName: 'amountInFigures',
                         label: _buildHeader(context, '金额'),
+                      ),
+                      GridColumn(
+                        columnName: 'button',
+                        label: _buildHeader(context, '操作'),
                       ),
                     ],
                   );
@@ -223,45 +230,95 @@ class InvoiceSelfView extends StatelessWidget {
 class InvoiceDataSource extends DataGridSource {
   InvoiceDataSource({
     required List<InvoiceModel> invoices,
-    required this.context, // 接收 BuildContext
+    required this.context,
+    this.showButton = true, // 默认不显示按钮
   }) {
     _invoices =
-        invoices
-            .map<DataGridRow>(
-              (invoice) => DataGridRow(
-                cells: [
-                  DataGridCell<String>(
-                    columnName: 'invoiceNum',
-                    value: invoice.invoiceNum,
-                  ),
-                  DataGridCell<String>(
-                    columnName: 'invoiceType',
-                    value: invoice.invoiceType,
-                  ),
-                  DataGridCell<String>(
-                    columnName: 'invoiceDate',
-                    value: invoice.invoiceDate,
-                  ),
-                  DataGridCell<String>(
-                    columnName: 'purchaserName',
-                    value: invoice.purchaserName,
-                  ),
-                  DataGridCell<String>(
-                    columnName: 'sellerName',
-                    value: invoice.sellerName,
-                  ),
-                  DataGridCell<Decimal>(
-                    columnName: 'amountInFigures',
-                    value: invoice.amountInFigures,
-                  ),
-                ],
+        invoices.map<DataGridRow>((invoice) {
+          final cells = [
+            DataGridCell<String>(
+              columnName: 'invoiceNum',
+              value: invoice.invoiceNum,
+            ),
+            DataGridCell<String>(
+              columnName: 'invoiceType',
+              value: invoice.invoiceType,
+            ),
+            DataGridCell<String>(
+              columnName: 'invoiceDate',
+              value: invoice.invoiceDate,
+            ),
+            DataGridCell<String>(
+              columnName: 'purchaserName',
+              value: invoice.purchaserName,
+            ),
+            DataGridCell<String>(
+              columnName: 'sellerName',
+              value: invoice.sellerName,
+            ),
+            DataGridCell<Decimal>(
+              columnName: 'amountInFigures',
+              value: invoice.amountInFigures,
+            ),
+          ];
+
+          // 如果需要显示按钮列，则添加按钮列
+          if (showButton) {
+            cells.add(
+              DataGridCell<Widget>(
+                columnName: 'button',
+                value: _buildPopupMenu(invoice),
               ),
-            )
-            .toList();
+            );
+          }
+
+          return DataGridRow(cells: cells);
+        }).toList();
   }
 
   final BuildContext context; // 保存 BuildContext
+  final bool showButton; // 控制是否显示按钮列
   List<DataGridRow> _invoices = [];
+
+  Widget _buildPopupMenu(InvoiceModel invoice) {
+    final invoiceSelfVM = context.watch<InvoiceSelfViewModel>();
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        switch (value) {
+          case 'edit':
+            invoiceSelfVM.editInvoice(invoice, context);
+            break;
+          case 'delete':
+            invoiceSelfVM.deleteInvoice(invoice, context);
+            break;
+        }
+      },
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(
+              value: 'edit',
+              child: Row(
+                children: const [
+                  Icon(FluentIcons.edit, size: 16),
+                  SizedBox(width: 8),
+                  Text('编辑'),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 'delete',
+              child: Row(
+                children: const [
+                  Icon(FluentIcons.delete, size: 16),
+                  SizedBox(width: 8),
+                  Text('删除'),
+                ],
+              ),
+            ),
+          ],
+      child: const Icon(FluentIcons.more, size: 20),
+    );
+  }
 
   @override
   List<DataGridRow> get rows => _invoices;
@@ -273,6 +330,10 @@ class InvoiceDataSource extends DataGridSource {
     return DataGridRowAdapter(
       cells:
           row.getCells().map<Widget>((dataGridCell) {
+            if (dataGridCell.columnName == 'button') {
+              // 如果是按钮列，直接渲染为 Widget
+              return dataGridCell.value as Widget;
+            }
             return Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(8.0),

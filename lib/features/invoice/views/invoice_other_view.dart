@@ -31,10 +31,9 @@ class InvoiceOtherView extends StatelessWidget {
             LayoutBuilder(
               builder: (context, constraints) {
                 final invoiceDataSource = InvoiceDataSource(
-                  invoices:
-                      invoiceSelfViewModel
-                          .invoicesOtherInfos, // 修改为使用 invoicesOtherInfos
+                  invoices: invoiceSelfViewModel.invoicesOtherInfos,
                   context: context,
+                  showButton: false, // 不显示按钮列
                 );
 
                 return Column(
@@ -68,7 +67,7 @@ class InvoiceOtherView extends StatelessWidget {
                           columns: [
                             GridColumn(
                               columnName: 'invoiceNum',
-                              label: _buildHeader(context, '发票ID'),
+                              label: _buildHeader(context, '发票税号'),
                             ),
                             GridColumn(
                               columnName: 'invoiceType',
