@@ -596,7 +596,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
 
     final path = await FilePicker.platform.saveFile(
       dialogTitle: '保存报表',
-      fileName: '发票报表.xlsx',
+      fileName: '票据报表.xlsx',
     );
 
     if (path != null) {
