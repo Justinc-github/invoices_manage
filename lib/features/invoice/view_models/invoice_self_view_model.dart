@@ -565,7 +565,7 @@ class InvoiceSelfViewModel with ChangeNotifier {
       final commodityDetails = <String>[];
       for (int j = 0; j < invoice.commodityName.length; j++) {
         final name = invoice.commodityName[j].word;
-        final type = invoice.commodityType[j].word;
+        final type = invoice.commodityType;
         final unit = invoice.commodityUnit[j].word;
         final num = invoice.commodityNum[j].word;
         final price = invoice.commodityPrice[j].word;
@@ -576,6 +576,9 @@ class InvoiceSelfViewModel with ChangeNotifier {
         commodityDetails.add(
           '名称: $name, 类型: $type, 单位: $unit, 数量: $num, 单价: $price, 金额: $amount, 税率: $taxRate, 税额: $tax',
         );
+        // commodityDetails.add(
+        //   '名称: $name,  单位: $unit, 数量: $num, 单价: $price, 金额: $amount, 税率: $taxRate, 税额: $tax',
+        // );
       }
 
       sheet
